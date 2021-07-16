@@ -1,0 +1,33 @@
+version: '3'                                                                                                                          
+services:
+  db:
+    image: postgres:11
+    volumes:
+      - /docker/postgresql/confluence/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=PASSWORD
+      - POSTGRES_USER=confluence
+    container_name: postgresql-confluence
+    networks:
+      - confluence
+       
+  confluence:
+    image: atlassian/confluence-server
+    volumes:
+      -  /docker/confluence/var/atlassian/application-data/confluence:/var/atlassian/application-data/confluence
+    container_name: confluence
+    ports:
+      - "8090:8090"
+      - "8091:8091"
+    environment:
+      - CATALINA_CONNECTOR_PROXYNAME="YOURINSTALLURL"
+      - CATALINA_CONNECTOR_PROXYPORT=443
+      - CATALINA_CONNECTOR_SCHEME=https
+      - CATALINA_CONNECTOR_SECURE=true
+    networks:
+      - confluence
+    depends_on:
+      - db
+ 
+networks:
+  confluence:

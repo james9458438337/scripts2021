@@ -1,0 +1,47 @@
+version: "2.0"
+services:
+ 
+  wiki-lb:
+    image: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /docker/etc/nginx:/etc/nginx
+      - /docker/etc/ssl:/etc/ssl:ro
+ 
+  wiki-server:
+    image: atlassian/confluence-server
+    ports:
+      - 8090:8090
+      - 8091:8091
+    environment:
+      - POSTGRES_INITDB_ARGS="--encoding=UTF8 --lc-collate='en_US.UTF-8'
+      - CATALINA_CONNECTOR_PROXYNAME=wiki.example.com
+      - CATALINA_CONNECTOR_PROXYPORT=443
+      - CATALINA_CONNECTOR_SCHEME=https
+      - CATALINA_CONNECTOR_SECURE=true
+      - CATALINA_OPTS=-Xms1g -Xmx4g
+      - JVM_MINIMUM_MEMORY=1024m
+      - JVM_MAXIMUM_MEMORY=4096m
+      - CONFLUENCE_CONFIG_PROPERTY1=confluence.setup.server.id
+      - CONFLUENCE_CONFIG_VALUE1=xxxx-xxxx-xxxx-xxxx
+      - ATL_TOMCAT_MAXTHREADS=35
+    volumes:
+      - /docker/var/atlassian/application-data/confluence:/var/atlassian/application-data/confluence
+    depends_on:
+      - wiki-lb
+      - wiki-db
+ 
+  wiki-db:
+    image: postgres:10
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_ENCODING=UTF8
+      - POSTGRES_COLLATE=en_US.UTF-8
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - /docker/var/lib/postgresql/data:/var/lib/postgresql/data

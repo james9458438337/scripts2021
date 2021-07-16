@@ -1,0 +1,29 @@
+#List all mysql users
+SELECT User,Host FROM mysql.user;
+
+#List grants for a mysql user
+SHOW GRANTS FOR 'bloguser'@'localhost';
+
+
+#Revoke all grants for a mysql user
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'bloguser'@'localhost';
+
+# Remove/Delete the user from the user table
+DROP USER 'bloguser'@'localhost';
+
+#Delete the database
+DROP DATABASE mywpblog;
+#OR()
+DROP USER IF EXISTS bar;
+
+
+#Create a New User
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'newuser'@'localhost';
+FLUSH PRIVILEGES;
+
+#Set password for user
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpassword');
+FLUSH PRIVILEGES;
+#OR
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'newpassword';
