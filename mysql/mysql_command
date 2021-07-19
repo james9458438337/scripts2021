@@ -27,3 +27,43 @@ SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpassword');
 FLUSH PRIVILEGES;
 #OR
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'newpassword';
+
+
+
+######## Note: By default, mysqldump command does not dump the information_schema database, performance_schema, and MySQL Cluster ndbinfo database
+If you want to include the information_schema tables, you must explicitly specify the name of the database in the mysqldump command, also include the —skip-lock-tables option.
+###############################################################
+
+#Backup all databases
+mysqldump -u root -p –all-databases | gzip > <path/db.sql.gz> 
+
+#Backup specific database
+mysqldump -u root -p db1 > <path/db.sql | gzip > <path/db.sql.gz>
+mysqldump -u root -p --databases db1 db2 | gzip > <path/db.sql.gz>
+
+#Backup database structure
+mysqldump -u root -p --no-data | gzip > <path/db.sql.gz>
+
+#Backup without the database structure only data
+mysqldump -u root -p –-no-create-info | gzip > <path/db.sql.gz>
+
+#Backup specific table
+mysqldump -u root -p db1 table1 table2 | gzip > <path/db.sql.gz>
+
+
+#Restore databases
+drop database  db1
+create database db1
+mysql -u root -p db1 < <path/db.sql>
+
+#Restore table
+use db1
+drop table table1
+
+create database db1_dummy
+use db1_dummy
+source <path/db.sql>
+
+mysqldump -u root -p db1_dummy table1 > <path/db_tb.sql>
+use db1
+source <path/db_tb.sql>
