@@ -30,6 +30,9 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'newpassword';
 
 
 
+
+
+
 ######## Note: By default, mysqldump command does not dump the information_schema database, performance_schema, and MySQL Cluster ndbinfo database
 If you want to include the information_schema tables, you must explicitly specify the name of the database in the mysqldump command, also include the —skip-lock-tables option.
 ###############################################################
@@ -67,3 +70,19 @@ source <path/db.sql>
 mysqldump -u root -p db1_dummy table1 > <path/db_tb.sql>
 use db1
 source <path/db_tb.sql>
+
+#########################################################################
+yum install perl-Digest-MD5 rsync -y
+
+#xtrabackup full backup from Master
+xtrabackup --defaults-file=/home/mysql_6605/my.cnf  --backup  --target-dir=/home/qqc/mysql/full_$(date +%Y%m%d%H%M)  --rsync  --user=root --password='tdNXkiJsBgbpw6D+/8AmNDJ1kr0=' --socket=/home/mysql_6605/mysql.sock  2>> /home/qqc/mysql/full_$(date +%Y%m%d%H%M).log
+
+
+#xtrabackup full backup from slave
+xtrabackup --defaults-file=/etc/my.cnf --backup --target-dir=/home/qqc/mysql/full_$(date +%Y%m%d%H%M) --slave-info --rsync --user=root --password='tdNXkiJsBgbpw6D+/8AmNDJ1kr0=' --socket=/var/lib/mysql/mysql.sock 2>> /home/qqc/mysql/full_$(date +%Y%m%d%H%M).log
+
+
+#xtrabackup full restore
+xtrabackup --defaults-file=/home/mysql_6605/my.cnf --prepare --target-dir=/home/qqc/mysql/full_202101181405 --rsync  --user=root --password='tdNXkiJsBgbpw6D+/8AmNDJ1kr0=' -S/home/mysql_6605/mysql.sock  2>> /home/qqc/mysql/full_202101181405_prepare.log
+
+#########################################################################
