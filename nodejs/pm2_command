@@ -1,0 +1,26 @@
+
+
+#customize starting service with log location and log timestamp
+pm2 start npm --name "hdb-PC" -- run start -o "/var/log/node/out.log" -e "/var/log/node/err.log" --log-date-format="YYYY-MM-DD HH:mm Z"
+
+
+#add pm2 service in systemd
+pm2 startup
+
+#pm2 save current processes into list of resurrention
+pm2 save
+
+#status of processes
+pm2 status <processes name>
+
+#stop processes
+pm2 stop <processes name>
+
+#restart processes
+pm2 restart <processes name>
+
+#restart processes one by one
+pm2 reload <processes name>
+
+#show detail of processes
+pm2 show <processes name>

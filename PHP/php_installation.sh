@@ -83,3 +83,5 @@ cp /usr/local/src/php-src-PHP-7.2.34/php.ini-development ./php.ini
 #vi php.ini
 #echo 'pathmunge /usr/local/php7/bin' > /etc/profile.d/php.sh
 php -v
+#ext will auto add to php.ini
+/usr/local/php7/bin/pear config-set php_ini '/usr/local/php7/lib/php.ini'

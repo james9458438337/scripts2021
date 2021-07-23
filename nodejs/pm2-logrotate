@@ -1,0 +1,13 @@
+#install pm2-logrotate
+pm2 install pm2-logrotate
+
+#show current configuration
+pm2 config pm2-logrotate
+
+#set configuration
+pm2 set pm2-logrotate:compress true 
+pm2 set pm2-logrotate:size 20 M
+pm2 set pm2-logrotate:retain 50
+pm2 set pm2-logrotate:dateFormat YYYY-MM-DD
+pm2 set pm2-logrotate:rotateInterval '00 10 * * *'
+

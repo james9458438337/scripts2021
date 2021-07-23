@@ -11,3 +11,6 @@ CATALINA_OPTS="-Dconfluence.document.conversion.fontpath=/usr/share/fonts/chines
 
 
 docker run -d -v /vagrant_data/confluence/:/var/atlassian/application-data/confluence -v /etc/localtime:/etc/localtime:ro --name="confluence" -p 7090:8090 -p 7091:8091 atlassian/confluence:7.12.2-ubuntu
+
+
+docker update --restart unless-stopped /confluence
