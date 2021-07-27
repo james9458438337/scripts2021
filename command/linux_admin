@@ -2,3 +2,18 @@
 awk -F: '{print $1}' /etc/passwd > /tmp/user
 while read -r line; do echo $line && chage -l $line | grep "Last password change"; done < /tmp/user
 while IFS= read -r line; do echo $line && chage -l $line | grep "Last password change"; done < /tmp/user
+
+#################################################
+#find process in netstat result with on PID
+#1 find inode
+netstat -tulpen | grep <port number>
+#2 find pid use inode
+lsof | awk 'NR==1 || /<inode number>/'
+#3 find process
+ps -lf -p <PID>
+
+#try rpc info      $rpcinfo -p
+
+#find file use inode
+find / inum <inode number>
+#################################################
