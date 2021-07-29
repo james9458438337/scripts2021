@@ -53,11 +53,11 @@ replication:
 
 #create new replicaset
 rs.initiate( {
-_id : "replicasetName",
+_id : "rs1",
 members: [
-{ _id: 0, host: "mongodb0:27017" },
-{ _id: 1, host: "mongodb1:27017" },
-{ _id: 2, host: "mongodb2:27017" }
+{ _id: 0, host: "192.168.33.10:27017" },
+{ _id: 1, host: "192.168.33.20:27017" },
+{ _id: 2, host: "192.168.33.30:27017" }
 ]
 })
 
@@ -76,10 +76,15 @@ rs.add( { host: "mongodb3:27017" } )
 
 #connect mongo replicaset
 mongo mongodb://<ip>:27017,<ip>:27017,<ip>:27017/?replicaSet=<replicaset name>
+mongo -u myUserAdmin -p myPassword --host <replicaset name>/<ip>:27017,<ip>:27017,<ip>:27017 -port 27017
 
 #connect mongo replicaset with authenticationDatabase
 mongo mongodb://testAdmin:123qwe@<ip>:27017,<ip>:27017,<ip>:27017/test?replicaSet=rs0
-mongo --host <ip>:27017,<ip>:27017,<ip>:27017 -u testAdmin -p --authenticationDatabase test
+mongo -u myUserAdmin -p myPassword --host <replicaset name>/<ip>:27017,<ip>:27017,<ip>:27017
+
+#connect mongo replicaset with authenticationDatabase and database name
+mongo "mongodb://testAdmin:123qwe@<ip>:27017,<ip>:27017,<ip>:27017/?<database>authSource=<database of user sets in>&replicaSet=<replicaset name>"
+mongo -u myUserAdmin -p myPassword --host <replicaset name>/<ip>:27017,<ip>:27017,<ip>:27017 --authenticationDatabase test
 
 #verify replica settings
 rs.status()
@@ -106,7 +111,7 @@ chmod 400 <path to keyfile >
 
 #3 make entry in conf file under security block for all members fo replica set
 security:
-  authentication: enabled
+  authorization: enabled
   keyfile: <path to keyfile >
 
 #### security between connecting clients and the replica set using User Access Control
