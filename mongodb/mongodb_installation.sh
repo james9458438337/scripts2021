@@ -42,6 +42,7 @@ EOF
 
 #start mongodb
 systemctl start mongod
+mongod --version
 
 #stop mongodb
 #systemctl stop mongod

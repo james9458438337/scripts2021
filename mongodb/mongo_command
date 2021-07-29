@@ -1,0 +1,122 @@
+#connect mongo manuly
+mongo --port 27017 <ip>
+mongo mongodb://<ip>:27017
+
+#################### Enable Access Control ##########
+show users
+show roles
+
+use admin
+db.createUser(
+  {
+    user: "myUserAdmin",
+    pwd: "myPassword",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
+  }
+)
+
+use test
+db.createUser(
+  {
+    user: "testAdmin",
+    pwd: "123qwe",
+    roles: [ { role: "readWrite", db: "test" } ]
+  }
+)
+
+db.getUsers()
+
+#config replicaset name in /etc/mongodb.conf
+security:
+    authorization: enabled
+
+systemctl restart mongod
+mongo
+ad.auth("myUserAdmin"，"myPassword")
+#or
+mongo -u myUserAdmin -p
+#or
+mongo -u testAdmin -p --authenticationDatabase testdb
+
+
+#use admin to change user password
+use admin
+db.changeUserPassword("testAdmin", "newPassword")
+
+
+
+
+############################# REPLICATION ################
+#config replicaset name in /etc/mongodb.conf
+replication:
+  replSetName: replicasetName
+
+#create new replicaset
+rs.initiate( {
+_id : "replicasetName",
+members: [
+{ _id: 0, host: "mongodb0:27017" },
+{ _id: 1, host: "mongodb1:27017" },
+{ _id: 2, host: "mongodb2:27017" }
+]
+})
+
+rs.initiate( {
+_id : "rs0",
+members: [
+{ _id: 0, host: "192.168.33.10:27017" },
+{ _id: 1, host: "192.168.33.20:27017" },
+{ _id: 2, host: "192.168.33.30:27017" }
+]
+})
+
+#add member into existed replicaSet
+rs.add( { host: "mongodb3:27017" } )
+
+
+#connect mongo replicaset
+mongo mongodb://<ip>:27017,<ip>:27017,<ip>:27017/?replicaSet=<replicaset name>
+
+#connect mongo replicaset with authenticationDatabase
+mongo mongodb://testAdmin:123qwe@<ip>:27017,<ip>:27017,<ip>:27017/test?replicaSet=rs0
+mongo --host <ip>:27017,<ip>:27017,<ip>:27017 -u testAdmin -p --authenticationDatabase test
+
+#verify replica settings
+rs.status()
+rs.printReplicationInfo()
+db.getReplicationInfo()
+rs.conf()
+
+#test replicaset
+db.createCollection("helloworld")
+show collections
+
+mongo mongodb://<ip>:27017 #connect to secondary node
+rs.slaveOk()
+show collections
+
+
+############################  replica set authentication  #############################
+#### security between members of the replica set using internal authentication
+#1 generate key file
+openssl rand -base64 765 >  <path to keyfile >
+chmod 400 <path to keyfile >
+
+#2 copy keyfile to all members of replica set 
+
+#3 make entry in conf file under security block for all members fo replica set
+security:
+  authentication: enabled
+  keyfile: <path to keyfile >
+
+#### security between connecting clients and the replica set using User Access Control
+#1 Login to mongo shell and create admin users
+  db.getSiblingDB("admin").createUser(
+  {
+      "user" : "newAdmin",
+      "pwd" : "changeme2",
+      roles: [{ "role" : "root", "db" : "admin" }]
+  }
+  )
+
+#2 restart all members from secondary  to primary
