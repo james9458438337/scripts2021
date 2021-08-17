@@ -1,0 +1,27 @@
+#logrotate command base on cron command
+
+#logrotate config file path
+/etc/logrotate.d/filename
+
+cat << EOF > /etc/logrotate.d/example
+/data/logs/serverlog/*.log{
+    rotate 15
+    nocompress
+    notifempty
+    missingok
+    copytruncate
+    dateformat-%Y%m%d.%s
+    olddir /home/logrotate/nginx/
+    dateext
+    sharedscripts
+    postrotate
+    /sbin/service httpd reload > /dev/null 2>/dev/null || true
+    endscript
+}
+EOF
+
+#manually execute
+logrotate -f /etc/logrotate.d/example
+
+#manually execute with defug mode
+logrotate -d -f /etc/logrotate.d/example

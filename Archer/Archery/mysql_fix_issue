@@ -1,0 +1,21 @@
+#causing there issues because using xtrabackup container to access mysql container
+
+
+#mysql socket location replace with below in my.cnf
+/var/lib/mysql/mysqld.sock 
+
+#add volume map host ./mysql/conf.d  to container /etc/mysql/conf.d in docker-compose.yaml
+    volumes:
+      - "./mysql/my.cnf:/etc/mysql/my.cnf"
+      - "./mysql/conf.d:/etc/mysql/conf.d"
+      - "./mysql/log:/var/log/mysql"
+      - "./mysql/datadir:/var/lib/mysql"
+
+#otherwise xtrabackup container won't read file under  /etc/mysql/conf.d
+
+#create new local folder ./mysql/conf.d ./mysql/log
+mkdir ./mysql/conf.d ./mysql/log
+#backup file from container to host
+docker cp mysql:/etc/mysql/conf.d ./mysql
+
+

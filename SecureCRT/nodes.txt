@@ -1,0 +1,3 @@
+
+#Set log file for session with folder tree
+C:\User\%USERNAME%\Documents\SCRT_logs\F%\%S(%H)-%Y%M%D-%h%m%s_%t_logs.txt

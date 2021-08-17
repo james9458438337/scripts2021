@@ -1,0 +1,89 @@
+#List all mysql users
+SELECT User,Host FROM mysql.user;
+
+#List grants for a mysql user
+SHOW GRANTS FOR 'bloguser'@'localhost';
+
+
+#Revoke all grants for a mysql user
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'bloguser'@'localhost';
+
+# Remove/Delete the user from the user table
+DROP USER 'bloguser'@'localhost';
+
+#Delete the database
+DROP DATABASE mywpblog;
+#OR()
+DROP USER IF EXISTS bar;
+
+
+#Create a New User
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'newuser'@'localhost';
+FLUSH PRIVILEGES;
+
+#Set password for user
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpassword');
+FLUSH PRIVILEGES;
+#OR
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'newpassword';
+
+
+
+
+
+
+######## Note: By default, mysqldump command does not dump the information_schema database, performance_schema, and MySQL Cluster ndbinfo database
+If you want to include the information_schema tables, you must explicitly specify the name of the database in the mysqldump command, also include the —skip-lock-tables option.
+###############################################################
+
+#Backup all databases
+mysqldump -u root -p –all-databases | gzip > <path/db.sql.gz> 
+
+#Backup specific database
+mysqldump -u root -p db1 > <path/db.sql | gzip > <path/db.sql.gz>
+mysqldump -u root -p --databases db1 db2 | gzip > <path/db.sql.gz>
+
+#Backup database structure
+mysqldump -u root -p --no-data | gzip > <path/db.sql.gz>
+
+#Backup without the database structure only data
+mysqldump -u root -p –-no-create-info | gzip > <path/db.sql.gz>
+
+#Backup specific table
+mysqldump -u root -p db1 table1 table2 | gzip > <path/db.sql.gz>
+
+
+#Restore databases
+drop database  db1
+create database db1
+mysql -u root -p db1 < <path/db.sql>
+
+#Restore table
+use db1
+drop table table1
+
+create database db1_dummy
+use db1_dummy
+source <path/db.sql>
+
+mysqldump -u root -p db1_dummy table1 > <path/db_tb.sql>
+use db1
+source <path/db_tb.sql>
+
+#########################################################################
+yum install perl-Digest-MD5 rsync -y
+
+#xtrabackup full backup from Master #for single db backup --databases='dbName'
+xtrabackup --defaults-file=/home/mysql_6605/my.cnf  --backup  --target-dir=/home/qqc/mysql/full_$(date +%Y%m%d%H%M)  --rsync  --user=root --password='tdNXkiJsBgbpw6D+/8AmNDJ1kr0=' --socket=/home/mysql_6605/mysql.sock  2>> /home/qqc/mysql/full_$(date +%Y%m%d%H%M).log
+
+
+
+#xtrabackup full backup from slave #for single db backup --databases='dbName'
+xtrabackup --defaults-file=/etc/my.cnf --backup --target-dir=/home/qqc/mysql/full_$(date +%Y%m%d%H%M) --slave-info --rsync --user=root --password='tdNXkiJsBgbpw6D+/8AmNDJ1kr0=' --socket=/var/lib/mysql/mysql.sock 2>> /home/qqc/mysql/full_$(date +%Y%m%d%H%M).log
+
+
+#xtrabackup full restore
+xtrabackup --defaults-file=/home/mysql_6605/my.cnf --prepare --target-dir=/home/qqc/mysql/full_202101181405 --rsync  --user=root --password='tdNXkiJsBgbpw6D+/8AmNDJ1kr0=' -S/home/mysql_6605/mysql.sock  2>> /home/qqc/mysql/full_202101181405_prepare.log
+
+#########################################################################

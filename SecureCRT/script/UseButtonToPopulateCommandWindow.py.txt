@@ -1,0 +1,36 @@
+#$language = "Python"
+#$interface = "1.0"
+
+# UseButtonToPopulateCommandWindow.py
+#   Last Modified: 05 Nov, 2016
+#     - Initial version
+#
+# Description:
+#   Shows one way to populate the command window with text
+#
+# Usage:
+#   Map a button to run this script. In the "Arguments" field of the Map
+#   Button window, specify the text you want to place into the command
+#   window.
+#     - If there are no script args, the contents of the clibpoard are
+#       placed into the Command Window.
+#     - Multiple Arguments are placed into the clipboard separated with \r,
+#       so if you want to send multiple commands...
+#          term len 0
+#          show ip flow top-talkers
+#          show ip nat nvi translations
+#       ...then you would need to specify args to this script as a quoted
+#       string, with each command separated with \f, as in:
+#          "term len 0\rshow ip flow top-talkers\rshow ip nat nvi translations"
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def main():
+    if crt.Arguments.Count < 1:
+        crt.CommandWindow.Text = crt.Clipboard.Text
+    else:
+        strText = crt.Arguments.GetArg(0)
+        strText = strText.replace("\\r", "\r\n")
+        crt.CommandWindow.Text = strText
+    
+main()

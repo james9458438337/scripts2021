@@ -1,0 +1,18 @@
+#create folder in internal link
+curl -X MKCOL -u "admin":"admin" 'http://192.168.33.30/nextcloud/remote.php/webdav/20210702'
+
+#create folder in share link
+curl -X MKCOL -u  "bxf2aJLD28Qe6xr":"9722EGRc" -H 'X-Requested-With: XMLHttpRequest' 'http://192.168.33.30/nextcloud/public.php/webdav/20210630'
+
+
+
+#upload file in internal link
+curl -T /tmp/user -u "admin":"admin" -H 'X-Requested-With: XMLHttpRequest' 'http://192.168.33.30/nextcloud/remote.php/webdav/20210630/user2'
+
+#upload file in share link
+curl -T /tmp/user -u "bxf2aJLD28Qe6xr":"9722EGRc" -H 'X-Requested-With: XMLHttpRequest' 'http://192.168.33.30/nextcloud/public.php/webdav/  20210630/user2'
+
+
+
+#get http status code
+curl -Is  -u "bxf2aJLD28Qe6xr":"9722EGRc" 'http://192.168.33.30/public.php/webdav/202107'|grep "^HTTP\/" | awk '{print $2}'

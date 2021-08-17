@@ -1,0 +1,22 @@
+######## rpm  ###############
+
+#list package files where installed 
+rpm -ql <package_name>
+
+#list config files whwere installed
+rpm -qc <package_name>
+
+#show package information like version
+rpm -qa <package_name>
+
+
+######## yum  ###############
+
+#show repo list
+yum repolist
+
+#install package from indicated repo
+yum --enablerepo="<repo name>" install <package_name>
+
+#show all version in repo of package
+yum --showduplicates list <package_name> | expand

@@ -1,0 +1,115 @@
+#$language = "Python"
+#$interface = "1.0"
+
+# SFTPTabAutomation.py
+#   Last Modified:
+#     26 Mar, 2020
+#       - Bug Fix: Close is a method; use Close()
+#       - Added Disconnect() call prior to Close()
+#       - No longer use a Dialog to display success/fail. Instead
+#         we send text to the screen.
+#
+#     04 Apr, 2012
+#       - Initial version
+# 
+# DESCRIPTION:
+#   Demonstrates opening an SFTP tab & programmatically driving a file download.
+#   Prior to running this script, the currently active tab must already be
+#   connected with the SSH2 protocol to a remote server that is capable of
+#   providing SFTP functionality; otherwise an error will occur and script
+#   execution will be halted.
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def Main():
+    # Open up an SFTP tab based on the current (script tab) connection
+    objSFTPTab = crt.GetScriptTab().ConnectSftp()
+    
+    # When using Get2, Screen.Synchronous should be False, or else nothing
+    # will appear on the screen (since we're not using any WaitForString()
+    # or ReadString() methods).
+    objSFTPTab.Screen.Synchronous = False
+    # Wait for the 'sftp> ' prompt to appear on the screen as an indication that
+    # interaction with the SFTP tab can begin.
+    while True:
+        strScreenText = objSFTPTab.Screen.Get2(
+            1,
+            1,
+            crt.Screen.Rows,
+            crt.Screen.Columns)
+        
+        # If we spot the "sftp> " prompt on the screen, then we're pretty sure
+        # it's safe to start interacting with the SFTP tab. Exit the loop:
+        if "sftp> " in strScreenText:
+            break
+        
+        # Otherwise, the absence of the "sftp> " prompt on the screen indicates
+        # that the tab isn't quite ready to go... sleep for a few milliseconds
+        # and then check again...
+        crt.Sleep(10)
+    
+    # Now we can work with the SFTP connection.
+    # NOTE: We turn on Synch = True now so that we don't miss any data.
+    #       This means that for EVERY Screen.Send(), we must do an accompanying
+    #       Screen.WaitForString() so that we don't get out of sync.
+    objSFTPTab.Screen.Synchronous = True
+    
+    # Get a long file listing with the "ls -l" command
+    objSFTPTab.Screen.Send("ls -l\r")
+    # Use ReadString to wait for the "sftp> " prompt to arrive, capturing all
+    # the data we receive in the mean time.
+    strFileListing = objSFTPTab.Screen.ReadString("sftp> ")
+
+    # Change local directory (local to the SecureCRT Windows machine) to the
+    # folder in which the downloaded file should be saved:
+    objSFTPTab.Screen.Send("lcd d:/Vagrant_vm/project1/working_scripts/initial\r")
+    objSFTPTab.Screen.WaitForString("sftp> ")
+    
+    # Change remote directory to the folder path where the file to be downloaded
+    # is known to exist:
+    objSFTPTab.Screen.Send("cd /tmp\r")
+    objSFTPTab.Screen.WaitForString("sftp> ")
+    
+    # Get (download) a file named MyFile.txt
+    objSFTPTab.Screen.Send("put 202106xx_linux_os_init.sh\r")
+    strResults = objSFTPTab.Screen.ReadString("sftp> ")
+
+    # Now that we're done receiving/capturing data from the screen,
+    # turn off Synch so we can display text to the terminal screen
+    # in real-time.
+    objSFTPTab.Screen.Synchronous = False
+
+    # Check for success/failure
+    if "100%" in strResults:
+        # Put the information we received from the screen into an array where
+        # each line of the output gathered is in a unique element of the array
+        vDataLines = strResults.split("\r\n")
+        # Display success along with the 2nd-to-last line of the information;
+        # that's the line that contains stats about the successful transfer.
+        objSFTPTab.Screen.Send(
+            "\r\n\r\n    File transfer successful: \r\n\r\n{}\r\n\r\n\t".format(
+                vDataLines[-2]),
+            True)
+        crt.Sleep(2000)
+    else:
+        objSFTPTab.Screen.Send("\r\n\r\nFailed to get file!\r\n\r\n\t{}".format(
+                strResults),
+            True)
+        crt.Sleep(3000)
+    
+    # Close the SFTP tab once we're done. In case the Global Option "Confirm
+    # on disconnect" is enabled, we'll first disconnect this SFTP tab prior
+    # to attempting to close it.
+    objSFTPTab.Session.Disconnect()
+    objSFTPTab.Close()
+
+Main()
+
+def main1():
+    if crt.Arguments.Count < 1:
+        crt.CommandWindow.Text = crt.Clipboard.Text
+    else:
+        strText = crt.Arguments.GetArg(0)
+        strText = strText.replace("\\r", "\r\n")
+        crt.CommandWindow.Text = strText
+    
+main1()
