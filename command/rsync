@@ -1,1 +1,0 @@
-rsync -e'ssh -p 30000' -arzvh --progress --bwlimit=100 /path qqc@ip:/path

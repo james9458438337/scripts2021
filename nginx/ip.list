@@ -1,3 +1,0 @@
-#set "include ip.list" in conf file
-
-192.168.1.1 true;
