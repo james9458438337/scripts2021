@@ -1,0 +1,59 @@
+inotifywatch
+
+语法：
+inotifywatch [-hvzrqf] [-e ] [-t ] [-a ] [-d ] [ ... ]
+参数：
+-h, --help
+输出帮助信息
+-v, --verbose
+输出详细信息
+@
+排除不需要监视的文件，可以是相对路径，也可以是绝对路径。
+--fromfile 
+从文件读取需要监视的文件或排除的文件，一个文件一行，排除的文件以@开头。
+-z, --zero
+输出表格的行和列，即使元素为空
+--exclude 
+正则匹配需要排除的文件，大小写敏感。
+--excludei 
+正则匹配需要排除的文件，忽略大小写。
+-r, --recursive
+监视一个目录下的所有子目录。
+-t , --timeout 
+设置超时时间
+-e , --event 
+只监听指定的事件。
+-a , --ascending 
+以指定事件升序排列。
+-d , --descending 
+以指定事件降序排列。
+
+可监听事件
+
+access  文件读取
+modify  文件更改。
+attrib  文件属性更改，如权限，时间戳等。
+close_write 以可写模式打开的文件被关闭，不代表此文件一定已经写入数据。
+close_nowrite   以只读模式打开的文件被关闭。
+close   文件被关闭，不管它是如何打开的。
+open    文件打开。
+moved_to    一个文件或目录移动到监听的目录，即使是在同一目录内移动，此事件也触发。
+moved_from  一个文件或目录移出监听的目录，即使是在同一目录内移动，此事件也触发。
+move    包括moved_to和 moved_from
+move_self   文件或目录被移除，之后不再监听此文件或目录。
+create  文件或目录创建
+delete  文件或目录删除
+delete_self 文件或目录移除，之后不再监听此文件或目录
+unmount 文件系统取消挂载，之后不再监听此文件系统。
+
+
+
+统计/linuxcool目录60秒内的相关数据：
+
+[root@linuxcool ~]# inotifywatch -v -e access -e modify -t 60 -r /linuxcool      
+统计/linuxcool目录信息以表格形式输出：
+
+[root@linuxcool ~]# inotifywatch -z /linuxcool
+统计目录产生的指定事件：
+
+[root@linuxcool ~]# inotifywatch -a move /linuxcool
