@@ -1,0 +1,4 @@
+#reset remote address 
+git remote set-url origin http://username:password@gitxxxx.xxx.xxx 
+
+
