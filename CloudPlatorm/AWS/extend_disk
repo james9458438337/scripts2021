@@ -1,0 +1,21 @@
+#######Extend the file system of NVMe EBS volumes
+#After modify the volume size
+
+#extend partition
+df -Th
+lsblk
+
+#Notice that there is a space between the device name and the partition number
+growpart /dev/nvme0n1 1
+
+#extend xfs file system
+xfs_growfs -d /
+
+#extend ext4 file system
+yum install xfsprogs
+resize2fs /dev/nvme0n1p1
+
+lsblk
+growpart /dev/nvme0n1 1
+xfs_growfs -d /
+lsblk

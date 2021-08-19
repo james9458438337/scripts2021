@@ -1,0 +1,9 @@
+以下命令从冷备提取到标准存储可操作目录 和指定天数删除副本 在linux的命令行操作
+此操作需要安装awscli 命令和配置accesskeyid 具体操作https://docs.amazonaws.cn/cli/latest/userguide/cli-chap-install.html
+
+aws s3api list-objects –bucket allvideobackup –prefix sese_226/20191007 –query 'Contents[?StorageClass==`GLACIER`][Key]' –output text | xargs -I {} sh -c “aws s3api restore-object –bucket allvideobackup –key \”{}\“ –restore-request Days=2,GlacierJobParameters={Tier=Standard} || true” 
+
+验证的命令为 验证目录里的单个文件成功
+
+aws s3api head-object –bucket louda-testonly –key image/AMI.png
+

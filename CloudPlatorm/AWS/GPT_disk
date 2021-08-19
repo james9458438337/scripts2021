@@ -1,0 +1,7 @@
+yum install gdisk -y
+
+gdisk /dev/nvme1n1
+#default i=8300 | n | w 
+
+mkfs.xfs -f /dev/nvme1n1
+mount /dev/nvme1n1 /data
