@@ -19,5 +19,9 @@ aws_secret_access_key = Emhdqsc2Q0wg7j3RBhCbLkI5ijNDaMRyrhQWnydu
 EOF
 
 
-aws s3 sync /home/www/admin/public/uploads s3://vasxhyimg/ 
+aws s3 sync /home/www/admin/public/uploads s3://vasxhyvd/
+
+##### origin source url ####
+https://vasxhyvd.s3.ap-southeast-1.amazonaws.com
+
 

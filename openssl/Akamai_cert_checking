@@ -1,0 +1,21 @@
+命令查看, 当前源站只配置了这个域名的域名证书, 而不是证书链:
+echo | openssl s_client -connect zz4.263bce.com:443 -servername jmimg.6tha00vm.com
+
+命令查看, 测试节点上能看到的完整的证书链信息:
+echo | openssl s_client -connect 23.50.62.19:443 -servername jmimg.6tha00vm.com
+
+
+测试staging，本地解析staging cname
+www.example.com.edgestuite-staging.net
+
+测试环境验证方法, 以 www.example.com 为例:
+1. ping 配置中的Edge hostname 加上-staging 得到一个IP地址 x.x.x.x, 例如:
+配置里面的www.example.com 对应的 Edge Hostname 是 www.example.com.edgesuite.net, 那在.net 前面加上-staging就是测试环境的 Edge Hostname: www.example.com.edgestuite-staging.net, ping 这个域名获取到一个ip 1.1.1.1;
+2. 在hosts文件中添加如下行：
+1.1.1.1 www.example.com
+# hosts文件位置:
+- MAC: /private/etc/hosts
+- Linux: /etc/hosts
+- Windows: C:\WINDOWS\system32\drivers\etc\hosts),
+host中IP 地址请修改为ping域名得到的地址，然后在命令行 ping www.example.com 检查配置是否生效。
+3. 打开浏览器匿名模式，清除DNS缓存和网页缓存后，访问相关域名下的URL，检查相关功能是否正常

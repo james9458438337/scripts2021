@@ -27,5 +27,9 @@ EOF
 bcecmd bos sync /home/source bos:/vasxhyvdencpt/
 
 
-#bcecmd bos ls
-#bcecmd bos ls bos:/vasxhyvdencpt/testdir1/newfile11
+bcecmd bos ls
+bcecmd bos ls bos:/vasxhyvdencpt/testdir1/newfile11
+
+
+##### origin source url ####
+https://vasxhyvdencpt.cdn.bcebos.com

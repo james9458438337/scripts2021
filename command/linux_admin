@@ -17,3 +17,14 @@ ps -lf -p <PID>
 #find file use inode
 find / inum <inode number>
 #################################################
+#display processes by memory usage 
+ ps aux | head -1; ps aux | sort -rnk 4 | head -5
+
+#display processes by cpu usage 
+ ps aux | head -1; ps aux | sort -rnk 3 | head -5
+
+#tip
+alias mem-by-proc="ps aux | head -1; ps aux | sort -rnk 10"
+
+#display single user's processes by cpu usage 
+ps aux | head -1; ps aux | grep root | sort -rnk 3 | more

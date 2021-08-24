@@ -20,3 +20,6 @@ yum --enablerepo="<repo name>" install <package_name>
 
 #show all version in repo of package
 yum --showduplicates list <package_name> | expand
+
+##### kill process  manually #####
+ps -ef | grep "$PN" | grep -v "grep" | awk '{print $2}' | xargs kill -9
