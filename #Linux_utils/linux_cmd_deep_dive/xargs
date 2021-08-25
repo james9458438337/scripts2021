@@ -1,0 +1,17 @@
+###How to Use xargs to Run Commands
+
+#In this example, the second command converts muti-line output into single line using xargs.
+
+ls -1 *.sh | xargs
+ls *.sh | xargs wc -l	    #count number of lines in each file
+ls *.sh | xargs wc -w	    #count number of words in each file
+ls *.sh | xargs wc -c	    #count number of characters in each file
+ls *.sh | xargs wc	    #count lines, words and characters in each file
+
+
+#The command below finds and recursively deletes the directory named All in the current directory.
+
+The find command with option -print0 action enables printing of the full directory path on the standard output, followed by a null character and -0 xargs flag deals with space in filenames.
+
+find . -name "All" -type d -print0 | xargs  -0 /bin/rm -rf "{}"
+

@@ -1,0 +1,2 @@
+#Processes by Memory Usage with ‘top’ in Batch Mode
+top -b -o +%MEM | head -n 22

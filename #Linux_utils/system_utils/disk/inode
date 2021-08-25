@@ -1,0 +1,13 @@
+#How to Increase Disk Inode Number in Linux
+Besides, you can also use the -T flag to specify how the filesystem is going to be used so that mkfs.ext4 can choose optimal filesystem parameters for that use including the bytes-per-inode ratio. The configuration file /etc/mke2fs.conf contains the different supported usage types and many other configurations parameters.
+
+In the following examples, the command tells that the file system will be used to create and/or store largefile and largefile4 which offer more relevant ratios of one inode every 1 MiB and 4 MiB respectively.
+
+$ sudo mkfs.ext4 -T largefile /dev/device
+OR
+$ sudo mkfs.ext4 -T largefile4 /dev/device
+
+
+#To list statistics about inode usage (amount available, amount used and amount free and use percentage) in the root partition, use the df commands as follows (the -h flag allows for showing information in a human-readable format).
+
+df -ih

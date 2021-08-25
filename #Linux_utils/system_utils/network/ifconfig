@@ -1,0 +1,47 @@
+#View All Network Interface Settings
+ifconfig 
+
+#Display Information of All Network Interfaces
+ifconfig -a
+
+#View Network Settings of Specific Interface
+ifconfig eth0
+
+#How to Enable a Network Interface
+ifconfig eth0 up
+ifup eth0
+
+#How to Disable a Network Interface
+ifconfig eth0 down
+ifdown eth0
+
+#How to Assign an IP Address to Network Interface
+ifconfig eth0 172.16.25.125
+
+#How to Assign a Netmask to Network Interface
+ifconfig eth0 netmask 255.255.255.224
+
+#How to Assign a Broadcast to Network Interface
+ifconfig eth0 broadcast 172.16.25.63
+
+#How to Assign an IP, Netmask, and Broadcast to Network Interface
+ifconfig eth0 172.16.25.125 netmask 255.255.255.224 broadcast 172.16.25.63
+
+#How to Change MTU for a Network Interface
+ifconfig eth0 mtu 1000
+
+#How to Enable Promiscuous Mode
+What happens in normal mode, when a packet is received by a network card, it verifies that it belongs to itself. If not, it drops the packet normally, but in the promiscuous mode is used to accept all the packets that flow through the network card.
+Today’s network tools use the promiscuous mode to capture and analyze the packets that flow through the network interface. To set the promiscuous mode, use the following command.
+
+ifconfig eth0 promisc
+
+#How to Add New Alias to Network Interface
+ifconfig eth0:0 172.16.25.127 && ifconfig eth0:0
+
+#How to Remove Alias to Network Interface
+ifconfig eth0:0 down
+
+#How to Change the MAC address of Network Interface
+ifconfig eth0 hw ether AA:BB:CC:DD:EE:FF
+

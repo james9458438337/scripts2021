@@ -1,0 +1,62 @@
+###How to View Linux System Information
+
+#print the kernel name of your system
+uname
+uname -s
+
+#To view your network hostname, use ‘-n’ switch with uname command as shown.
+uname -n
+
+#To get information about kernel-version, use ‘-v’ switc
+uname -v
+
+#To get the information about your kernel release, use ‘-r’ switch.
+uname -r
+
+#To print your machine hardware name, use ‘-m’ switch:
+uname -m
+
+#All this information can be printed at once by running ‘uname -a’ command as shown below.
+uname -a
+
+
+###How to View Linux System Hardware Information
+yum install -y lshw
+lshw
+lshw -short
+
+### How to View Linux CPU Information
+lscpu
+
+
+###How to Collect Linux Block Device Information
+lsblk
+lsblk -a
+
+
+###How to Print USB Controllers Information
+yum install -y install usbutils
+lsusb
+lsusb -v
+
+###How to Print PCI Devices Information
+yum install -y pciutils
+lspci
+lspci -t
+lspci -v
+
+###How to Print SCSI Devices Information
+lsscsi -s
+
+###How to Print Information about SATA Devices
+hdparm /dev/sda1
+hdparm -g /dev/sda1
+
+###How to Print Linux File System Information
+fdisk -l
+
+###How to Extract Information about Hardware Components
+dmidecode -t memory
+dmidecode -t system
+dmidecode -t bios
+dmidecode -t processor

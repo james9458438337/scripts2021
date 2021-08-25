@@ -1,0 +1,305 @@
+https://www.tecmint.com/page/2/?s=AWK
+
+1.How to Use Awk and Regular Expressions to Filter Text or String in Files with Awk in Linux – Part 1
+
+awk '//{print}'/etc/hosts
+awk '/localhost/{print}' /etc/hosts
+awk '/l.c/{print}' /etc/hosts
+awk '/l*c/{print}' /etc/localhost
+awk '/[all]/{print}' /etc/hosts
+awk '/[Kk]T/{print}' /etc/hosts
+awk '/[0-9]/{print}' /etc/hosts 
+awk '/^ff/{print}' /etc/hosts
+awk '/rs$/{print}' /etc/hosts
+awk '/\$25.00/{print}' deals.txt
+
+2.How to Use Awk to Print Fields and Columns in File with Awk in Linux – Part 2
+
+awk '//{print $1 $2 $3 }' tecmintinfo.txt
+awk '//{print $1, $2, $3; }' tecmintinfo.txt
+awk '//{printf "%-10s %s\n",$2, $3 }' my_shopping.txt
+
+
+3.How to Use Awk to Filter Text or Strings Using Pattern Specific Actions with Awk in Linux – Part 3
+
+#cat food_prices.list 
+No	Item_Name		Quantity	Price
+1	Mangoes			   10		$2.45
+2	Apples			   20		$1.50
+3	Bananas			   5		$0.90
+4	Pineapples		   10		$3.46
+5	Oranges			   10		$0.78
+6	Tomatoes		   5		$0.55
+7	Onions			   5        $0.45
+
+awk '/ *\$[2-9]\.[0-9][0-9] */ { print $1, $2, $3, $4, "*" ; } / *\$[0-1]\.[0-9][0-9] */ { print ; }' food_prices.list
+
+awk '/ *\$[2-9]\.[0-9][0-9] */ { printf "%-10s %-10s %-10s %-10s\n", $1, $2, $3, $4 "*" ; } / *\$[0-1]\.[0-9][0-9] */ { printf "%-10s %-10s %-10s %-10s\n", $1, $2, $3, $4; }' food_prices.list
+
+awk '/ *\$[2-9]\.[0-9][0-9] */ { print $0 "*" ; } / *\$[0-1]\.[0-9][0-9] */ { print ; }' food_prices.list 
+
+
+4.How to Use Comparison Operators with Awk in Linux – Part 4
+> – greater than
+< – less than
+>= – greater than or equal to
+<= – less than or equal to
+== – equal to
+!= – not equal to
+some_value ~ / pattern/ – true if some_value matches pattern
+some_value !~ / pattern/ – true if some_value does not match pattern
+
+awk '$3 <= 30 { printf "%s\t%s\n", $0,"**" ; } $3 > 30 { print $0 ;}' food_list.txt
+
+ awk '$3 <= 20 { printf "%s\t%s\n", $0,"TRUE" ; } $3 > 20  { print $0 ;} ' food_list.txt 
+
+
+ 5.How to Use Compound Expressions with Awk in Linux – Part 5
+ In Awk, compound expressions are built using the && referred to as (and) and the || referred to as (or) compound operators.
+
+ awk '($3 ~ /^\$[2-9][0-9]*\.[0-9][0-9]$/) && ($4=="Tech") { printf "%s\t%s\n",$0,"*"; } ' tecmint_deals.txt 
+
+
+ 6.How to Use ‘next’ Command with Awk in Linux – Part 6
+
+ awk '$4 <= 20 { printf "%s\t%s\n", $0,"*" ; } $4 > 20 { print $0 ;} ' food_list.txt 
+
+#After a single input line is printed using $4 <= 20 { printf "%s\t%s\n", $0,"*" ; next ; }, the next command included will help skip the second expression $4 > 20 { print $0 ;}, so execution goes to the next input line without having to waste time on checking whether the quantity is greater than 20.
+
+awk '$4 <= 20 { printf "%s\t%s\n", $0,"*" ; next; } $4 > 20 { print $0 ;} ' food_list.txt 
+
+7.How to Read Awk Input from STDIN in Linux – Part 7
+
+dir -l | awk '$3=="root" {print $1,$3,$4, $9;} '
+cat tecmint_deals.txt | awk '$4 ~ /Tech/{print}'
+
+
+8.How to Use Awk Variables, Numeric Expressions and Assignment Operators – Part 8
+
+#Awk Variables
+awk '/Aaron/{ first_name=$2 ; second_name=$3 ; print first_name, second_name ; }' names.txt
+uname -a | awk '{hostname=$2 ; print hostname ; }' 
+
+#Numeric Expressions
+* : multiplication operator
++ : addition operator
+/ : division operator
+- : subtraction operator
+% : modulus operator
+^ : exponentiation operator
+
+#If we want to count the number of times the domain tecmint.com appears in the file, we can write a simple script to do that as follows:
+#!/bin/bash
+for file in $@; do
+        if [ -f $file ] ; then
+                #print out filename
+                echo "File is: $file"
+                #print a number incrementally for every line containing tecmint.com 
+                awk  '/^tecmint.com/ { counter=counter+1 ; printf "%s\n", counter ; }'   $file
+        else
+                #print error info incase input is not a file
+                echo "$file is not a file, please specify a file." >&2 && exit 1
+        fi
+done
+#terminate script with exit code 0 in case of successful execution 
+exit 0
+./script.sh  ~/domains.txt
+
+#Assignment Operators
+*= : multiplication assignment operator
++= : addition assignment operator
+/= : division assignment operator
+-= : subtraction assignment operator
+%= : modulus assignment operator
+^= : exponentiation assignment operator
+
+variable_name=variable_name operator operand
+counter=0
+counter=counter+1
+
+variable_name operator=operand
+counter=0
+counter+=1
+
+#Therefore, we can alter the Awk command in the shell script we just wrote above using += assignment operator as follows:
+#!/bin/bash
+for file in $@; do
+        if [ -f $file ] ; then
+                #print out filename
+                echo "File is: $file"
+                #print a number incrementally for every line containing tecmint.com 
+                awk  '/^tecmint.com/ { counter+=1 ; printf  "%s\n",  counter ; }'   $file
+        else
+                #print error info incase input is not a file
+                echo "$file is not a file, please specify a file." >&2 && exit 1
+        fi
+done
+#terminate script with exit code 0 in case of successful execution 
+exit 0
+
+
+9.How to Use Awk Special Patterns ‘BEGIN and END’ – Part 9
+
+BEGIN pattern: means that Awk will execute the action(s) specified in BEGIN once before any input lines are read.
+END pattern: means that Awk will execute the action(s) specified in END before it actually exits.
+
+awk '/^tecmint.com/ { counter+=1 ; printf "%s\n", counter ; }' $file
+
+#!/bin/bash
+for file in $@; do
+        if [ -f $file ] ; then
+                #print out filename
+                echo "File is: $file"
+                #print the total number of times tecmint.com appears in the file
+                awk ' BEGIN {  print "The number of times tecmint.com appears in the file is:" ; }
+                      /^tecmint.com/ {  counter+=1  ;  }
+                      END {  printf "%s\n",  counter  ; } 
+                    '  $file
+        else
+                #print error info incase input is not a file
+                echo "$file is not a file, please specify a file." >&2 && exit 1
+        fi
+done
+#terminate script with exit code 0 in case of successful execution 
+exit 0
+
+
+10.How to Use Awk Built-in Variables – Part 10
+
+FILENAME : current input file name( do not change variable name)
+FR : number of the current input line (that is input line 1, 2, 3… so on, do not change variable name)
+NF : number of fields in current input line (do not change variable name)
+OFS : output field separator
+FS : input field separator
+ORS : output record separator
+RS : input record separator
+
+
+awk ' { print FILENAME } ' ~/domains.txt 
+
+awk ' END { print "Number of records in file is: ", NR } ' domains.txt 
+awk '{ print "Record:",NR,"has",NF,"fields" ; }' domain.txt
+
+awk -F':' '{ print $1, $4 ;}' /etc/passwd
+awk ' BEGIN {  FS=":" ; }  { print $1, $4  ; } ' /etc/passwd
+
+awk -F':' ' BEGIN { OFS="==>" ;} { print $1, $4 ;}' /etc/passwd
+
+
+
+11.How to Allow Awk to Use Shell Variables – Part 11
+
+#Using Shell Quoting
+#!/bin/bash
+
+#read user input
+read -p "Please enter username:" username
+
+#search for username in /etc/passwd file and print details on the screen
+cat /etc/passwd | awk "/$username/ "' { print $0 }'
+
+
+#Using Awk’s Variable Assignment
+username="aaronkilik"
+cat /etc/passwd | awk -v name="$username" ' $0 ~ name {print $0}'
+
+
+12.How to Use Flow Control Statements in Awk – Part 12
+if-else statement
+for statement
+while statement
+do-while statement
+break statement
+continue statement
+next statement
+nextfile statement
+exit statement
+
+#The if-else Statement
+Sarah L			35    	F
+Aaron Kili		40    	M
+John  Doo		20    	M
+Kili  Seth		49    	M  
+
+#!/bin/bash
+awk ' { 
+        if ( $3 <= 25 ){
+           print "User",$1,$2,"is less than 25 years old." ;
+        }
+        else {
+           print "User",$1,$2,"is more than 25 years old" ; 
+}
+}'    ~/users.txt
+
+#The for Statement
+for ( counter-initialization; test-condition; counter-increment ){
+      actions
+}
+
+awk 'BEGIN{ for(counter=0;counter<=10;counter++){ print counter} }'
+
+
+#The while Statement
+#!/bin/bash
+awk ' BEGIN{ counter=0 ;
+         
+        while(counter<=10){
+              print counter;
+              counter+=1 ;
+             
+}
+}
+
+#The do while Statement
+#!/bin/bash
+
+awk ' BEGIN{ counter=0 ;  
+        do{
+            print counter;  
+            counter+=1 ;    
+        }
+        while (counter<=10)   
+} 
+'
+
+13.How to Write Scripts Using Awk Programming Language – Part 13
+#! /usr/bin/awk -f 
+
+#! – referred to as Shebang, which specifies an interpreter for the instructions in a script
+/usr/bin/awk – is the interpreter
+-f – interpreter option, used to read a program file
+
+#!/usr/bin/awk -f 
+
+#This is how to write a comment in Awk
+#using the BEGIN special pattern to print a sentence 
+
+BEGIN { printf "%s\n","Writing my first Awk executable script!" }
+
+
+#! /usr/bin/awk -f 
+
+#use BEGIN sepecial character to set FS built-in variable
+BEGIN { FS=":" }
+
+#search for username: aaronkilik and print account details 
+/aaronkilik/ { print "Username :",$1,"User ID :",$3,"User GID :",$4 }
+
+chmod +x second.awk
+./second.awk /etc/passwd
+
+
+#! /usr/bin/awk -f 
+
+#printing from 0-10 using a do while statement 
+#do while statement 
+BEGIN {
+#initialize a counter
+x=0
+
+do {
+    print x;
+    x+=1;
+}
+while(x<=10)
+}

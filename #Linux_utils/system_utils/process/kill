@@ -1,0 +1,25 @@
+#How to Kill Linux Process Using Kill, Pkill and Killall
+
+Kill command sends a signal, a specified signal to a currently running process. The kill command can be executed in a number of ways, directly or from a shell script.
+
+kill [signal or option] PID(s)
+
+SIGTERM is the default and safest way to kill a process. 
+SIGHUP is a less secure way of killing a process than SIGTERM. 
+SIGKILL is the most unsafe way among the above three, to kill a process that terminates a process without saving.
+
+How about Customising the above output using syntax as ‘pidof process‘.
+pidof mysqld
+pgrep sshd
+
+kill -9 3139
+kill -SIGTERM 3139
+
+
+#How to Kill a Process in Linux Using Process Name
+
+pkill mysqld
+
+killall mysqld
+OR
+pkill mysqld

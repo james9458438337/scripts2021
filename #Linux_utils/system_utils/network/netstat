@@ -1,0 +1,10 @@
+#How to Watch TCP and UDP Ports in Real-time
+
+#List All Open Ports in Linux
+netstat -tulpn
+
+-t – enables listing of TCP ports.
+-u – enables listing of UDP ports.
+-l – prints only listening sockets.
+-n – shows the port number.
+-p – show process/program name.

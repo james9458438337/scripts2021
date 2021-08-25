@@ -1,0 +1,39 @@
+#ss command is a tool that is used for displaying network socket related information on a Linux system. The tool displays more detailed information that the netstat command which is used for displaying active socket connections.
+
+#Listing all Connections
+ss
+
+#Listing Listening and Non-listening Ports
+ss -a
+
+#Listing Listening Sockets
+ss -l
+
+#List all TCP Connections
+ss -t
+
+#List all Listening TCP Connections
+ss -lt
+
+#List all UDP Connections
+ss -ua
+
+#List all Listening UDP 
+ss -ul
+
+#Display PID (Process IDs) of Sockets
+ss -p
+
+#Display Summary Statistics
+ss -s
+
+#Display IPv4 and IPv6 Socket Connections
+ss -4
+ss -6
+
+#Filter Connections by Port Number
+ss -at '( dport = :22 or sport = :22 )'
+ss -at '( dport = :ssh or sport = :ssh )'
+
+#List All Open Ports in Linux
+ss -tulpn

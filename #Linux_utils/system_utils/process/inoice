@@ -1,0 +1,12 @@
+#ionice is a useful program which sets or gets the I/O scheduling class and priority for another program.
+
+To specify the name or number of the scheduling class to use (0 for none, 1 for real time, 2 for best-effort, 3 for idle)
+
+
+---- Deleting Huge Files in Linux -----
+ionice -c 3 rm /var/logs/syslog
+ionice -c 3 rm -rf /var/log/apache
+
+If there won’t be much idle time on the system, then we may want to use the best-effort scheduling class and set a low priority like this:
+ionice -c 2 -n 6 rm /var/logs/syslog
+ionice -c 2 -n 6 rm -rf /var/log/apache

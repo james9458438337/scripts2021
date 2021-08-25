@@ -1,0 +1,10 @@
+sestatus
+
+setenforce 0
+OR
+setenforce Permissive
+
+
+setenforce 1
+OR
+setenforce enforce

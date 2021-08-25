@@ -1,0 +1,32 @@
+###4 Ways to Generate a Strong Pre-Shared Key (PSK) in Linux
+
+A Pre-Shared Key (PSK) or also known as a shared secret is a string of characters that is used as an authentication key in cryptographic processes. A PSK is shared before being used and is held by both parties to the communication to authenticate each other, usually before other authentication methods such as usernames and passwords are applied.
+
+It is commonly used in different types of Virtual Private Network (VPN) connections, wireless networks in a type of encryption known as WPA-PSK (Wi-Fi Protected Access Pre-Shared Key) and WPA2-PSK, and also in the EAP (Extensible Authentication Protocol Pre-Shared Key), and many others authentication mechanisms.
+
+#Using OpenSSL Command
+openssl rand -base64 32
+openssl rand -base64 64
+
+#Using GPG Command
+GPG is a command-line tool to provide digital encryption and signing services using the OpenPGP standard. You can use its --gen-random option to generate a strong PSK and filter it through base64 encoding as shown.
+
+In the following commands, 1 or 2 is the quality level and 10, 20, 40, and 70 are the character counts.
+
+gpg --gen-random 1 10 | base64
+gpg --gen-random 2 20 | base64
+gpg --gen-random 1 40 | base64
+gpg --gen-random 2 70 | base64
+
+
+
+#Using Pseudorandom Number Generators
+head -c 35 /dev/random | base64
+head -c 60 /dev/random | base64
+
+
+#Using date and sha256sum Commands
+date | sha256sum | base64 | head -c 45; echo
+date | sha256sum | base64 | head -c 50; echo
+date | sha256sum | base64 | head -c 60; echo
+

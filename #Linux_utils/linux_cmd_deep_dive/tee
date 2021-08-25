@@ -1,0 +1,6 @@
+###How to Use Tee with Commands in Linux
+
+ps -eo cmd,pid,ppid,%mem,%cpu --sort=-%mem | head | tee topprocs.txt
+
+#To append data in an existing file(s), pass the -a flag.
+ps -eo cmd,pid,ppid,%mem,%cpu --sort=-%mem | head | tee -a topprocs.txt 

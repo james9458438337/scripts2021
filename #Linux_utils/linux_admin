@@ -1,0 +1,30 @@
+#check which user is last changed password
+awk -F: '{print $1}' /etc/passwd > /tmp/user
+while read -r line; do echo $line && chage -l $line | grep "Last password change"; done < /tmp/user
+while IFS= read -r line; do echo $line && chage -l $line | grep "Last password change"; done < /tmp/user
+
+#################################################
+#find process in netstat result with on PID
+#1 find inode
+netstat -tulpen | grep <port number>
+#2 find pid use inode
+lsof | awk 'NR==1 || /<inode number>/'
+#3 find process
+ps -lf -p <PID>
+
+#try rpc info      $rpcinfo -p
+
+#find file use inode
+find / inum <inode number>
+#################################################
+#display processes by memory usage 
+ ps aux | head -1; ps aux | sort -rnk 4 | head -5
+
+#display processes by cpu usage 
+ ps aux | head -1; ps aux | sort -rnk 3 | head -5
+
+#tip
+alias mem-by-proc="ps aux | head -1; ps aux | sort -rnk 10"
+
+#display single user's processes by cpu usage 
+ps aux | head -1; ps aux | grep root | sort -rnk 3 | more

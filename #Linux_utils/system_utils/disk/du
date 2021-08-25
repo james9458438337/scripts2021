@@ -1,0 +1,20 @@
+#How to Find the Directory Size in Human Readable Format
+du -h /home/tecmint
+
+#How to Find Total Size of a Directory in Linux
+du -sh /home/tecmint
+
+#Using the “-a” flag with the “du” command displays the disk usage of all the files and directories.
+du -ah /home/tecmint
+
+du -kh /home/tecmint
+du -mh /home/tecmint
+
+#How to Exclude Files with du Command
+du -ah --exclude="*.txt" /home/tecmint
+
+#How to Find Directory Usage By Modification Time
+du -ha --time /home/tecmint
+
+#To get the total number of inodes in the root directory, run the following du command.
+du --inode /

@@ -1,0 +1,13 @@
+#Check a User Group in Linux
+groups tecmint
+
+#Add a User to a Group
+usermod -aG postgres tecmint
+groups tecmint
+
+#Remove a User from a Group
+gpasswd -d tecmint postgres
+OR
+deluser tecmint postgres
+
+groups tecmint
