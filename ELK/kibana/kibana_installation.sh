@@ -13,15 +13,33 @@ gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=1
 autorefresh=1
 type=rpm-md
+
+[ELK-7.x]
+name=ELK repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
 EOF
 
-#yum --showduplicates list kibana | expand
-yum install -y kibana-6.4.3
+#yum --enablerepo=ELK-6.x --showduplicates list kibana | expand
+yum install -y --enablerepo=ELK-6.x kibana-6.4.3
 
-Enable and start kibana service
+
+<< COMMENT start with systemd
 systemctl daemon-reload
 systemctl enable kibana
 systemctl start kibana
+COMMENT
+
+<< COMMENT start with init
+chkconfig --add kibana
+chkconfig kibana on
+sudo -i service kibana start
+COMMENT
+
 #Install Nginx
 yum install -y epel-release
 yum install -y nginx

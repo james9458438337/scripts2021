@@ -13,10 +13,19 @@ gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=1
 autorefresh=1
 type=rpm-md
+
+[ELK-7.x]
+name=ELK repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
 EOF
 
-#yum --showduplicates list kibana | expand
-yum install -y logstash-6.4.3
+#yum --enablerepo=ELK-6.x --showduplicates list logstash | expand
+yum install -y --enablerepo=ELK-6.x 1:logstash-6.4.3-1.noarch
 
 #Generate SSL Certificates
 openssl req -subj '/CN=server.example.com/' -x509 -days 3650 -nodes -batch -newkey rsa:2048 -keyout /etc/pki/tls/private/logstash.key -out /etc/pki/tls/certs/logstash.crt

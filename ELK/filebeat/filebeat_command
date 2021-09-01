@@ -1,0 +1,10 @@
+#filebeat test output
+filebeat test out
+
+# list  modules
+filebeat  modules list
+
+# enable modules
+filebeat modules enable system
+
+

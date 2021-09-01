@@ -1,0 +1,209 @@
+
+#variable indicator in  /etc/sysconfig/elasticsearch
+
+#show logs
+journalctl  --unit elasticsearch
+journalctl  --unit elasticsearch --since "2021-08-27"
+
+
+
+# Cluster Health
+This API can be used to see general info on the cluster and gauge its health:
+
+curl -XGET 'localhost:9200/_cluster/health?pretty'
+
+
+# Cluster State
+This API can be sued to see a detailed status report on your entire cluster. You can filter results by specifying parameters in the call URL.
+
+curl -XGET 'localhost:9200/_cluster/state?pretty'
+
+
+# Cluster Stats
+Extremely useful for monitoring performance metrics on your entire cluster:
+
+curl -XGET 'localhost:9200/_cluster/stats?human&pretty'
+
+
+#### Nodes Stats
+If you want to inspect metrics for specific nodes in the cluster, use this API. You can see info for all nodes, a specific node, or ask to see only index or OS/process specific stats.
+
+#All nodes:
+
+curl -XGET 'localhost:9200/_nodes/stats?pretty'
+
+#A specific node:
+
+curl -XGET 'localhost:9200/_nodes/node-1/stats?pretty'
+
+#Index-only stats:
+
+curl -XGET 'localhost:9200/_nodes/stats/indices?pretty'
+
+#You can get any of the specific metrics for any single node with the following structure:
+
+curl -XGET 'localhost:9200/_nodes/stats/ingest?pretty'
+
+#Or multiple nodes with the following structure:
+
+curl -XGET 'localhost:9200/_nodes/stats/ingest,fs?pretty'
+
+#Or all metrics with either of these two formats:
+
+curl -XGET 'localhost:9200/_nodes/stats/_all?pretty'
+
+curl -XGET 'localhost:9200/_nodes/stats?metric=_all?pretty'
+
+
+### Nodes Info
+If you want to collect information on any or all of your cluster nodes, use this API.
+
+#Retrieve for a single node:
+
+curl -XGET ‘localhost:9200/_nodes/?pretty’
+
+Or multiple nodes:
+
+curl -XGET ‘localhost:9200/_nodes/node1,node2?pretty’
+
+#Retrieve data on plugins or ingest:
+
+curl -XGET ‘localhost:9200/_nodes/plugins
+
+curl -XGET ‘localhost:9200/_nodes/ingest
+
+
+
+#Pending Cluster Tasks
+This API tracks changes at the cluster level, including but not limited to updated mapping, failed sharding, and index creation.
+
+#The following GET should return a list of tasks:
+
+curl -XGET ‘localhost:9200/_cluster/pending_tasks?pretty’
+
+
+
+#Task Management
+Similar to the Pending Cluster Tasks API, the Task Management API will get data on currently running tasks on respective nodes.
+
+#To get info on all currently executing tasks, enter:
+
+curl -XGET "localhost:9200/_tasks
+
+#To get current tasks by specific nodes, AND additionally cluster-related tasks, enter the node names as such and then append &actions to the GET:
+
+curl -XGET ‘localhost:9200/_tasks?nodes=node1,node2&actions=cluster:*&pretty’
+
+#Retrieve info about a specific task (or its child tasks) by entering _tasks/ and then the task’s individual ID:
+
+curl -XGET ‘localhost:9200/_tasks/43r315an3xamp13’
+
+#And for child tasks:
+
+curl -XGET ‘localhost:9200/_tasks?
+parent_task_id=43r315an3xamp13’
+
+#This API also supports reindexing, search, task grouping and task cancelling.
+
+#Remote Cluster Info
+Get remote cluster info with:
+
+curl -XGET 'localhost:9200/_remote/info?pretty'
+
+#Voting Configuration Exclusions
+This will remove master-eligible nodes.
+Remove all exclusions by:
+
+curl -X DELETE ‘localhost:9200/_cluster/
+voting_config_exclusions?pretty’
+
+Or add a node to the exclusions list:
+
+curl -X POST ‘localhost:9200/_cluster/
+voting_config_exclusions/node1?pretty’
+
+
+############ security settings certificate verification ##############
+# generate certificate
+echo -e "\n" | ./bin/elasticsearch-certutil ca -s
+cp /usr/share/elasticsearch/elastic-stack-ca.p12 /etc/elasticsearch/
+chown root:elasticsearch /etc/elasticsearch/elastic-stack-ca.p12
+chmod 644 /etc/elasticsearch/elastic-stack-ca.p12
+
+#add Configuration to elasticsearch.yml
+cat << EOF >>  /etc/elasticsearch/elasticsearch.yml
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.keystore.type: PKCS12
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/elastic-stack-ca.p12
+xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/elastic-stack-ca.p12
+xpack.security.transport.ssl.truststore.type: PKCS12
+EOF
+
+#add Configuration to elasticsearch.yml for other nodes with same cert and cert file
+
+systemctl restart elasticsearch
+
+#set password for elk members
+printf y | .bin/elasticsearch-setup-passwords auto
+
+
+
+
+############ security settings hostname verification ##############
+
+#gencerate certificate by hostname
+cat << EOF >/usr/share/elasticsearch/config/certificates/instances.yml
+instances:
+  - name: data01
+    dns:
+      - data01 
+      - localhost
+    ip:
+      - 127.0.0.1
+      - 172.0.0.1
+  - name: data02
+    dns:
+      - data02
+      - localhost
+    ip:
+      - 127.0.0.1
+      - 172.0.0.2
+  - name: kibana
+    dns:
+      - kibanahost
+      - localhost
+    ip:
+      - 127.0.0.1
+      - 172.0.0.3
+      - 54.10.01.02
+EOF
+
+./bin/elasticsearch-certutil cert --silent --pem --in config/certificates/instances.yml -out /etc/elasticsearch/certs/bundle.zip
+
+unzip /etc/elasticsearch/certs/bundle.zip
+#ca.crt – This is the file that you will need to install on all nodes and client apps.
+#ca.key – You will need this if you need to generate further certificates in the future for new nodes.
+
+chown -R elasticsearch:elasticsearch /etc/elasticsearch/certs
+
+#add Configuration to elasticsearch.yml 
+cat << EOF >>  /etc/elasticsearch/elasticsearch.yml
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: full
+xpack.security.transport.ssl.key: /etc/elasticsearch/certs/data01.key 
+xpack.security.transport.ssl.certificate: /etc/elasticsearch/certs/data01.crt 
+xpack.security.transport.ssl.certificate_authorities: [ "/etc/elasticsearch/certs/ca.crt" ]
+xpack.security.http.ssl.verification_mode: full
+xpack.security.http.ssl.key: /etc/elasticsearch/certs/data01.key 
+xpack.security.http.ssl.certificate: /etc/elasticsearch/certs/data01.crt 
+xpack.security.http.ssl.certificate_authorities: [ "/etc/elasticsearch/certs/ca.crt" ]
+EOF
+
+#add Configuration to elasticsearch.yml for other nodes with its own cert and cert file
+
+systemctl restart elasticsearch
+
+#set password for elk members
+.bin/elasticsearch-setup-passwords auto
