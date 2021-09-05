@@ -118,6 +118,34 @@ EOF
 #cluster.initial_master_nodes
 After the cluster forms successfully for the first time, remove the cluster.initial_master_nodes setting from each nodes' configuration. Do not use this setting when restarting a cluster or adding a new node to an existing cluster.
 
+#### security settings <after cluster created>####
+# generate certificate
+echo -e "\n" | /usr/share/elasticsearch/bin/elasticsearch-certutil ca -s
+cp /usr/share/elasticsearch/elastic-stack-ca.p12 /etc/elasticsearch/
+chown root:elasticsearch /etc/elasticsearch/elastic-stack-ca.p12
+chmod 644 /etc/elasticsearch/elastic-stack-ca.p12
+printf '\n%.0s' {1..3} | /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12 -s
+cp /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/
+chown root:elasticsearch /etc/elasticsearch/elastic-certificates.p12
+chmod 644 /etc/elasticsearch/elastic-certificates.p12
+
+#add Configuration to elasticsearch.yml
+cat << EOF >>  /etc/elasticsearch/elasticsearch.yml
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.keystore.type: PKCS12
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.type: PKCS12
+EOF
+
+#add Configuration to elasticsearch.yml for other nodes with same cert and cert file
+
+systemctl restart elasticsearch
+
+#set password for elk members
+printf y | /usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto
 
 
-#####
+
