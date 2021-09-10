@@ -2,9 +2,9 @@
 ##### server side #####
 
 #create user same as client side (source side)
-mkdir /home/backup && chown -R nginx:nginx /home/backup
 useradd -s /sbin/nologin -M nginx
-echo "rsyncbackup:^Y&U*I(O123456" > /etc/rsync.pass
+mkdir /home/backup && chown -R nginx:nginx /home/backup
+echo "^Y&U*I(O123456" > /etc/rsync.pass
 chmod 600 /etc/rsync.pass
 cp /etc/rsyncd.conf /etc/rsyncd.conf.bak
 cat << EOF > /etc/rsyncd.conf
@@ -26,7 +26,7 @@ use chroot = yes
 read only = no
 list = yes
 auth users = rsyncbackup
-secrets file = /etc/rsyncd.pass
+secrets file = /etc/rsync.pass
 hosts allow = 192.168.33.0/24
 EOF
 
@@ -45,7 +45,7 @@ chmod 600 /etc/rsync.pass
 rsync --port=10873 192.168.33.30::
 
 #list files inside module
-rsync --list-only --port=10873 rsyncbackup@192.168.33.30::backup --password-file=/etc/rsyncd.pass
+rsync --list-only --port=10873 rsyncbackup@192.168.33.30::backup --password-file=/etc/rsync.pass
 
 #push files to server side
-rsync -avz --port=10873 /home/source/ rsyncbackup@192.168.33.30::backup --password-file=/etc/rsyncd.pass
+rsync -avz --port=10873 /home/source/ rsyncbackup@192.168.33.30::backup --password-file=/etc/rsync.pass

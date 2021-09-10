@@ -1,0 +1,84 @@
+2) pt-slave-find: Finds and prints replication hierarchy of the slaves – shows you the topology and replication hierarchy of your MySQL replication instances.
+
+Example :
+
+slave-findShell
+[root@Tst1Master ~]# ./pt-slave-find --host=192.168.56.10
+192.168.56.10
+Version         5.6.22-72.0-log
+Server ID       1
+Uptime          42:09 (started 2015-03-03T01:40:42)
+Replication     Is not a slave, has 1 slaves connected, is not read_only
+Filters
+Binary logging  STATEMENT
+Slave status
+Slave mode      STRICT
+Auto-increment  increment 1, offset 1
+InnoDB version  5.6.22-72.0
++- 192.168.56.11
+   Version         5.6.22-72.0
+   Server ID       2
+   Uptime          41:48 (started 2015-03-03T01:41:03)
+   Replication     Is a slave, has 0 slaves connected, is not read_only
+   Filters
+   Binary logging  STATEMENT
+   Slave status    0 seconds behind, running, no errors
+   Slave mode      STRICT
+   Auto-increment  increment 1, offset 1
+   InnoDB version  5.6.22-72.0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+[root@Tst1Master ~]# ./pt-slave-find --host=192.168.56.10
+192.168.56.10
+Version         5.6.22-72.0-log
+Server ID       1
+Uptime          42:09 (started 2015-03-03T01:40:42)
+Replication     Is not a slave, has 1 slaves connected, is not read_only
+Filters
+Binary logging  STATEMENT
+Slave status
+Slave mode      STRICT
+Auto-increment  increment 1, offset 1
+InnoDB version  5.6.22-72.0
++- 192.168.56.11
+   Version         5.6.22-72.0
+   Server ID       2
+   Uptime          41:48 (started 2015-03-03T01:41:03)
+   Replication     Is a slave, has 0 slaves connected, is not read_only
+   Filters
+   Binary logging  STATEMENT
+   Slave status    0 seconds behind, running, no errors
+   Slave mode      STRICT
+   Auto-increment  increment 1, offset 1
+   InnoDB version  5.6.22-72.0
+slave-find1Shell
+[root@Tst1Master ~]# ./pt-slave-find --host=192.168.56.10 --report-format=hostname
+192.168.56.10
++- 192.168.56.11
+1
+2
+3
+[root@Tst1Master ~]# ./pt-slave-find --host=192.168.56.10 --report-format=hostname
+192.168.56.10
++- 192.168.56.11

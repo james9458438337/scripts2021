@@ -1,0 +1,10 @@
+3) pt-slave-restart: Watches the MySQL replication slaves for any error and tries to restart the replication.
+
+The tool is very useful for skipping statements that cause errors and continuing replication. If you use this carelessly, the slave will be having the inconsistent data. However  when you use the tool, I recommended you to confirm the consistency of data between master and slave with help of pt-table-checksum.
+
+Example : Restart the slave for error-numbers=1062 (Duplicate entry ‘1’ for key ‘PRIMARY’)
+
+slave-restartShell
+#pt-slave-restart --socket=/var/lib/mysql/custom-feeds/mysql.sock --ask-pass --error-numbers=1062
+1
+#pt-slave-restart --socket=/var/lib/mysql/custom-feeds/mysql.sock --ask-pass --error-numbers=1062

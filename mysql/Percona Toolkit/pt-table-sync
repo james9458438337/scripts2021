@@ -1,0 +1,43 @@
+5) pt-table-sync: Sync the slave with their master (synchronizes data efficiently between MySQL tables.)
+
+Example :
+
+Shell
+[root@Tst1Slave ~]# ./pt-table-sync -dD --print  --sync-to-master 192.168.56.11
+REPLACE INTO `d`.`t`(`id`, `data`) VALUES ('1', 'Test1') /*percona-toolkit src_db:d src_tbl:t src_dsn:P=3306,h=192.168.56.10 dst_db:d dst_tbl:t dst_dsn:h=192.168.56.11 lock:1 transaction:1 changing_src:1 replicate:0 bidirectional:0 pid:6435 user:root host:Tst1Slave.mysql*/;
+REPLACE INTO `d`.`t`(`id`, `data`) VALUES ('2', 'Test2') /*percona-toolkit src_db:d src_tbl:t src_dsn:P=3306,h=192.168.56.10 dst_db:d dst_tbl:t dst_dsn:h=192.168.56.11 lock:1 transaction:1 changing_src:1 replicate:0 bidirectional:0 pid:6435 user:root host:Tst1Slave.mysql*/;
+[root@Tst1Slave ~]#
+1
+2
+3
+4
+[root@Tst1Slave ~]# ./pt-table-sync -dD --print  --sync-to-master 192.168.56.11
+REPLACE INTO `d`.`t`(`id`, `data`) VALUES ('1', 'Test1') /*percona-toolkit src_db:d src_tbl:t src_dsn:P=3306,h=192.168.56.10 dst_db:d dst_tbl:t dst_dsn:h=192.168.56.11 lock:1 transaction:1 changing_src:1 replicate:0 bidirectional:0 pid:6435 user:root host:Tst1Slave.mysql*/;
+REPLACE INTO `d`.`t`(`id`, `data`) VALUES ('2', 'Test2') /*percona-toolkit src_db:d src_tbl:t src_dsn:P=3306,h=192.168.56.10 dst_db:d dst_tbl:t dst_dsn:h=192.168.56.11 lock:1 transaction:1 changing_src:1 replicate:0 bidirectional:0 pid:6435 user:root host:Tst1Slave.mysql*/;
+[root@Tst1Slave ~]#
+Shell
+[root@Tst1Slave ~]# ./pt-table-sync -dD  --verbose  --execute  --sync-to-master 192.168.56.11
+# Syncing h=192.168.56.11
+# DELETE REPLACE INSERT UPDATE ALGORITHM START    END      EXIT DATABASE.TABLE
+#      0       2      0      0 Chunk     03:38:09 03:38:09 2    d.t
+1
+2
+3
+4
+[root@Tst1Slave ~]# ./pt-table-sync -dD  --verbose  --execute  --sync-to-master 192.168.56.11
+# Syncing h=192.168.56.11
+# DELETE REPLACE INSERT UPDATE ALGORITHM START    END      EXIT DATABASE.TABLE
+#      0       2      0      0 Chunk     03:38:09 03:38:09 2    d.t
+We have successfully sync the tables so let us try the checksum again and confirm the table is in sync.
+
+Shell
+[root@Tst1Master ~]# ./pt-table-checksum -dD
+            TS ERRORS  DIFFS     ROWS  CHUNKS SKIPPED    TIME TABLE
+03-03T03:03:40      0      0        2       1       0   0.111 d.t
+1
+2
+3
+[root@Tst1Master ~]# ./pt-table-checksum -dD
+            TS ERRORS  DIFFS     ROWS  CHUNKS SKIPPED    TIME TABLE
+03-03T03:03:40      0      0        2       1       0   0.111 d.t
+The aforesaid are the simple examples and based on your needs, you can choose the tools, options or modify the scripts. I also recommend that you to go through the documentations for more details on each tools.

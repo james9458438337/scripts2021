@@ -1,0 +1,15 @@
+4) pt-table-checksum: Performs an online replication consistency check by executing checksum queries on the master, which produces different results on replicas that are inconsistent with the master.
+
+Example :
+
+checksum1Shell
+[root@Tst1Master ~]# ./pt-table-checksum -dD
+            TS ERRORS  DIFFS     ROWS  CHUNKS SKIPPED    TIME TABLE
+03-03T02:34:44      0      1        2       1       0   0.011 d.t
+1
+2
+3
+[root@Tst1Master ~]# ./pt-table-checksum -dD
+            TS ERRORS  DIFFS     ROWS  CHUNKS SKIPPED    TIME TABLE
+03-03T02:34:44      0      1        2       1       0   0.011 d.t
+Note: It  is important to run the pt-table-checksum tool regardless of whether or not you’ve ever skipped an event with pt-slave-restart to make sure we are having the identical data on the slave side.

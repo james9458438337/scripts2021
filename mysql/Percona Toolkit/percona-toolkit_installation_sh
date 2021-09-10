@@ -1,0 +1,4 @@
+#!/bin/bash
+wget https://downloads.percona.com/downloads/percona-toolkit/3.3.1/binary/redhat/7/x86_64/percona-toolkit-3.3.1-1.el7.x86_64.rpm
+
+yum install -y percona-toolkit-3.3.1-1.el7.x86_64.rpm

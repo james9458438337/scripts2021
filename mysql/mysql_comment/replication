@@ -1,0 +1,11 @@
+
+###In MySQL the replication works based on the three threads as shown below.
+
+1) I/O thread on the slave server:  To start on receiving replication events, an I/O thread starts on the slave server and connects to the master server.
+
+2) Master connection handler thread:  As a connection handier, master starts a thread whenever a replication slave connects to a master. The master server sends the events from its binary log file to the slave I/O thread, notifying slave about newly written events to its binary log. The slave I/O thread which records them to in the slave’s relay log file.
+
+3) Slave SQL thread:  When it starts, immediately reads the events from the relay log and applies on the Slave DB. Once it finishes the processing of every relay log and if the I/O thread is writing the events to a new relay log file then it deletes the processed one. Suppose if the  I/O thread is writing  the events on a relay log and which is the same file SQL thread is reading then the SQL thread pauses until more events are available in the relay log.
+
+
+
