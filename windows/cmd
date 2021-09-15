@@ -1,0 +1,5 @@
+
+
+#check public ip
+
+nslookup myip.opendns.com. resolver1.opendns.com

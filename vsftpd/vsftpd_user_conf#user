@@ -1,7 +1,0 @@
-local_root=/home/www/qqc.app/
-write_enable=yes
-anon_world_readable_only=yes
-anon_upload_enable=yes
-anon_mkdir_write_enable=yes
-anon_other_write_enable=yes
-anon_umask=022
