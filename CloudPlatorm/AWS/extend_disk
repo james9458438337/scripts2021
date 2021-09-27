@@ -6,6 +6,7 @@ df -Th
 lsblk
 
 #Notice that there is a space between the device name and the partition number
+#gpt disk skip this step
 growpart /dev/nvme0n1 1
 
 #extend xfs file system

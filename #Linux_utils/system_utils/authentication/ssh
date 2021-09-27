@@ -1,0 +1,3 @@
+printf '\n%.0s' {1..4} | ssh-keygen -q -t rsa -N ''
+ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y 
+ssh-copy-id -i ~/.ssh/id_rsa.pub qqc@23.237.112.194

@@ -41,7 +41,9 @@ chown -R vsftpd:vsftpd /home/ftp
 mkdir -p /home/ftp/virtual_users/vuser001
 mkdir -p /home/ftp/virtual_users/vuser002
 chown -R vsftpd: /home/ftp/virtual_users
-chmod -R 700  /home/ftp/virtual_users
+chmod -R 550 /home/ftp/virtual_users
+chmod -R 750 /home/ftp/virtual_users/vuser001
+chmod -R 750 /home/ftp/virtual_users/vuser002
 
 #5.Configure vsftpd.conf (set virtual user configuration item)
 

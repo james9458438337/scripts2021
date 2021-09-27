@@ -1,7 +1,7 @@
     
 #!/bin/bash
 #install after nginx
-yum -y autoremove php*-* remi-release
+yum autoremove -y php*-* remi-release
 rm -fr /etc/yum.repos.d/remi* 
 rm -fr /etc/php*
 rm -fr /etc/opt/remi*

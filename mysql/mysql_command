@@ -99,3 +99,31 @@ xtrabackup --defaults-file=/etc/my.cnf --backup --target-dir=/home/qqc/mysql/ful
 xtrabackup --defaults-file=/home/mysql_6605/my.cnf --prepare --target-dir=/home/qqc/mysql/full_202101181405 --rsync  --user=root --password='tdNXkiJsBgbpw6D+/8AmNDJ1kr0=' -S/home/mysql_6605/mysql.sock  2>> /home/qqc/mysql/full_202101181405_prepare.log
 
 #########################################################################
+
+1.查看数据库编码格式
+show  create  database  <数据库名>;
+
+2.查看数据表的编码格式
+show  create  table  <表名>;
+
+3.创建数据库时指定数据库的字符集
+create  database  <数据库名>  character  set  utf8;
+
+4.创建数据表时指定数据表的编码格式
+create table tb_books(
+    name  varchar(45) not  null,
+    price  double  not  null,
+    bookCount  int  not  null,
+    author  varchar(45)  not  null) default  charset = utf8;
+
+5.修改数据库的编码格式
+alter  database  <数据库> character  set  utf8;
+
+6.修改数据表格编码格式
+alter  table  <表名> character  set  utf8;
+
+7.修改字段编码格式
+alter  table <表名>  change  <字段名>  <字段名>  <类型>  charset  set  utf8;
+alter table tb_books change name name varchar(20) character  set  utf8 not null;
+
+show variables like 'char%';

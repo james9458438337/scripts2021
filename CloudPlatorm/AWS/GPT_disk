@@ -5,3 +5,5 @@ gdisk /dev/nvme1n1
 
 mkfs.xfs -f /dev/nvme1n1
 mount /dev/nvme1n1 /data
+
+parted -l
