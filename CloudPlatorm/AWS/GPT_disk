@@ -7,3 +7,5 @@ mkfs.xfs -f /dev/nvme1n1
 mount /dev/nvme1n1 /data
 
 parted -l
+
+partprobe  /dev/nvme1n1

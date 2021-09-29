@@ -23,4 +23,7 @@ rclone sync -P /home/source demo:/somewhere/
 
 #mount remote storage to local dir
 yum install -y fuse
- rclone mount --daemon demo: /google_driver
+rclone mount --daemon demo: /google_driver
+
+#windows mount
+rclone mount --vfs-cache-mode full /google_driver z:

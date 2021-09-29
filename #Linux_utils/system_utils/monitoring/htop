@@ -1,0 +1,13 @@
+For CPU usage the color key is:
+
+Blue: low priority processes (nice > 0)
+Green: normal (user) processes
+Red: kernel processes
+Yellow: IRQ time
+Magenta: Soft IRQ time
+Grey: IO Wait time
+For Memory usage the key is:
+
+Green: Used memory pages
+Blue: Buffer pages
+Yellow: Cache pages
