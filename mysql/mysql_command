@@ -127,3 +127,22 @@ alter  table <表名>  change  <字段名>  <字段名>  <类型>  charset  set 
 alter table tb_books change name name varchar(20) character  set  utf8 not null;
 
 show variables like 'char%';
+
+#########################################################################
+#purge bin logs
+PURGE BINARY LOGS TO ‘mysql-bin.000223’;
+#this will erase all binary logs before ‘mysql-bin.000223’.
+
+#if you need to delete all binary logs older than 7 days, you just need to run this sql:
+mysql> PURGE BINARY LOGS BEFORE DATE_SUB( NOW( ), INTERVAL 7 DAY);
+#To purge all logs before a specific date:
+mysql> PURGE MASTER LOGS BEFORE ‘2010-03-01 00:00:00’;
+#To purge logs automatically (every Monday at 3am) you could use a cron job like this:
+
+mysql> SET GLOBAL expire_logs_days = 7;
+mysql> show variables like ‘expire_%’;
+#then add this to /etc/my.cnf
+[mysqld]
+expire-logs-days=3
+#and mysqld will delete them logs for you
+#########################################################################

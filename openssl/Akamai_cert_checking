@@ -19,3 +19,291 @@ www.example.com.edgestuite-staging.net
 - Windows: C:\WINDOWS\system32\drivers\etc\hosts),
 host中IP 地址请修改为ping域名得到的地址，然后在命令行 ping www.example.com 检查配置是否生效。
 3. 打开浏览器匿名模式，清除DNS缓存和网页缓存后，访问相关域名下的URL，检查相关功能是否正常
+
+
+###### Origin SSL Certificate Verification. How to test using openssl command #####
+Description
+1. Introduction.
+
+This article describes how to verify SSL trust chain using openssl. This article doesn’t deep dive into certificate renewal process.
+
+ 
+
+2. Origin SSL Certificate Verification. Brief description.
+
+The Origin SSL Certificate Verification is a mechanism for controlling how your origin server is authenticated. It is intended to prevent 'man-in-the-middle' (MITM) attacks, where a malicious entity directs end-user traffic to the attacker's server.
+
+To confirm that your origin is, in fact, your origin, our edge server will check that the certificate your origin sent during the SSL handshake either exactly matches a certificate, or is signed by a certificate authority listed in your property.
+
+ 
+
+3. Certificate renewal process.
+
+Renewal process may slightly vary depends on multiple factors but in common it looks like the following:
+
+Issue new certificate.
+Change configuration file so that it works fine with new certificate(make sure that configuration file works fine with the old certificate as well).
+Test against Staging network.
+Deploy to Production network.
+Test against Production network.
+Deploy new certificate.
+ 
+
+4. Problem.
+ 
+
+In some cases certificate renewal process might not be trivial because of the risk to DoS customer’s web site.
+
+For example renewal scenarios below requires configuration file change most of the time:
+
+Switching from self signed certificate to a certificate issued by trusted Certificate Authority(CA).
+Switching from CA presented in the Akamai Certificate Store to another CA not presented in the list.
+Switching from one CA to another, both not presented in the Akamai Certificate Store.
+Switching to a CA presented in the  Akamai Certificate Store.
+ 
+
+Even though certificate renewal process looks intuitive, there are cases, where a customer would like to do a test in order to make sure that new certificate will pass validation.
+
+Without separate origin server it is not possible to properly test configuration, however we can verify trust chain using openssl command.
+
+ 
+
+5. How to use openssl verify.
+
+Let assume we have the following files
+
+server.pem - server certificate in PEM format;
+int.pem - intermediate certificate;
+root.pem - root certificate. Can be downloaded from CA’s home page.
+ 
+
+Format:
+
+openssl verify -CAfile <bundle.pem> <certificate.pem>
+
+ 
+
+1. Root is a self signed certificate:
+
+$ openssl verify root.pem
+
+root.pem: C = US, O = GeoTrust Inc., CN = GeoTrust Global CA
+
+error 18 at 0 depth lookup:self signed certificate
+
+OK
+
+ 
+
+2. Intermediate certificate signed by root therefore validation succeed:
+
+$ openssl verify -CAfile root.pem int.pem
+
+int.pem: OK
+
+ 
+
+3. Server certificate passed validation, but intermediate failed because root is not specified
+
+$ openssl verify -CAfile int.pem server.pem
+
+server.pem: C = US, O = GeoTrust Inc., CN = GeoTrust SSL CA - G4
+
+error 2 at 1 depth lookup:unable to get issuer certificate
+
+ 
+
+4. Validation successful because all certificates which construct trust chain are specified.
+
+$ openssl verify -CAfile root.pem -untrusted int.pem server.pem
+
+server.pem: OK
+
+ 
+
+6. How to do a Test.
+
+1. Create CA bundle
+
+$cat root.pem int.pem > bundle.pem
+
+ 
+
+2. Verify trust chain
+
+openssl verify -CAfile bundle.pem certificate.pem
+
+certificate.pem: OK
+
+ 
+
+So for example if customer in a doubt which root or intermediate certificate to use, or would like to test whether validation succeed with Akamai Certificate Store this technique might become useful.
+
+
+
+
+
+
+##### OpenSSL cookbook - certificates manipulations #####
+
+Description
+This post describes several HOWTOs I find useful to use efficiently OpenSSL when assessing certificates, CSR or associated CAs.
+
+How to output readable data from a CRT .pem file ?
+$ openssl x509 -in [file.pem] -text -noout
+
+
+
+How to output readable data from a CSR .pem file ?
+$ openssl req -in [file.pem] -text -noout
+
+How to convert binary certificate to .pem format?
+$ openssl x509 -inform DER -in sd.crt -out sd.pem
+
+
+
+How to get the chain of certificates?
+$ echo | openssl s_client -showcerts -connect "<hostname>":"443" 2>/dev/null
+
+
+
+How to get the SHA1 fingerprint of a certificate?
+$ echo | openssl s_client -connect <hostname>:443 2>/dev/null | openssl x509 -noout -fingerprint | sed 's/://g' | awk '{print tolower($0)}'
+
+
+
+
+echo | openssl s_client -connect <hostname>:443 2>/dev/null | openssl x509 -noout -fingerprint | sed 's/://g' | awk '{print tolower($0)}'
+
+
+
+How to get the SHA1 fingerprint from a pem file?
+$ openssl x509 -in ca.pem -noout -fingerprint | sed 's/://g'
+
+
+
+How to get the CA of a given certificate out of a .pem file?
+1/ Show the certificate in readable format:
+
+
+
+$ openssl x509 -in cert.pem -text -noout
+
+
+
+2/ Locate the “CA Issuers” URI :
+
+
+
+[...]
+
+
+
+            X509v3 Extended Key Usage:
+
+                TLS Web Server Authentication, TLS Web Client Authentication
+
+            X509v3 Authority Key Identifier:
+
+                keyid:0D:44:5C:16:53:44:C1:82:7E:1D:20:AB:25:F4:01:63:D8:BE:79:A5
+
+
+
+            Authority Information Access:
+
+                OCSP - URI:http://sd.symcd.com
+
+                CA Issuers - URI:http://sd.symcb.com/sd.crt
+
+
+
+    Signature Algorithm: sha1WithRSAEncryption
+
+        1a:7e:2d:6d:9f:89:16:bb:aa:cc:e9:e3:7f:48:39:91:a9:6d:
+
+        7a:91:d2:da:66:aa:87:d7:c3:32:92:d0:ba:2b:fa:f7:19:c4:
+
+        ec:e3:18:26:1d:d4:b1:08:19:8b:f2:58:09:da:46:38:4e:01:
+
+        3b:19:49:f3:5c:db:bf:27:d6:71:8a:d4:ba:d3:ed:c6:c6:ab:
+
+        38:ac:93:3d:86:f9:40:b4:ba:11:5d:d3:ef:43:21:e2:66:ce:
+
+        ed:90:ab:2e:d6:52:df:ce:ed:71:51:e2:8f:ea:cf:81:ce:a6:
+
+        f1:01:ea:a4:92:0e:59:3c:0e:f [...]
+
+
+
+3/ Get the CA certificate:
+
+$ curl -s -S http://sd.symcb.com/sd.crt -o sd.crt
+
+4/ Convert it in .pem format:
+
+$ openssl x509 -inform DER -in sd.crt -out sd.pem
+
+5/ Shows the CA certificate:
+
+$ openssl x509 -in sd.pem -text -noout
+
+
+
+##### FOSSL useful openssl commands #####
+Description
+During origin certificate renewal process it is often required to do some manipulations with certificate like:
+
+Convert certificate from one format to another
+Download current certificate from origin
+Check certificate fingerprint
+Download full trust chain
+ 
+
+Below some basic openssl commands which might become very handy.
+
+ 
+
+1. How to get basic certificate information from origin server
+
+ openssl s_client -connect www-org.example.com:443 </dev/null
+ 
+
+2. How to get server certificate in PEM format
+
+openssl s_client -connect www-org.example.com:443 </dev/null | openssl x509
+ 
+
+3. How to get certificate validity date
+
+ openssl s_client -connect www-org.example.com:443 </dev/null | openssl x509 -noout -text | grep Validity -A 2
+ 
+
+4. How to get root and intermediate certificates in PEM format
+
+ openssl s_client -showcerts -connect www-org.example.com:443 </dev/null
+ 
+
+5. How to get certificate fingerprint
+
+ openssl s_client -showcerts -connect www-org.example.com:443 | openssl x509 -sha1 -noout -fingerprint
+ 
+
+6. Save the certificate in PEM format:
+
+The PEM format is the most common format used for certificates. Extensions used for PEM certificates are cer, crt, and pem. They are Base64 encoded ASCII files. 
+
+openssl s_client -connect www-org.example.com:443 </dev/null -showcerts 2>/dev/null | openssl x509 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' >www-org.example.cer
+
+
+7. How to get info from .cer file
+
+ openssl x509  -in www-org.example.cer  -noout -text
+
+8. How to get a fingerprint of PEM certificate
+
+ openssl x509  -in www-org.example.cer  -sha1 -noout -fingerprint
+ 
+
+Useful links:
+
+http://sslshopper.com/certificate-decoder.html - very nice tool to decode certificate in PEM format.

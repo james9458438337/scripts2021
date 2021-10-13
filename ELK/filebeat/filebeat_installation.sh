@@ -43,3 +43,7 @@ chkconfig --add filebeat
 chkconfig filebeat on
 sudo -i service filebeat start
 COMMENT
+
+
+filebeat test config
+filebeat test config -e -c filebeat.yml

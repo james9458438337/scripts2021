@@ -1,0 +1,16 @@
+#clean history
+history -c
+cat /dev/null > ~/.bash_history 
+
+#add timestamp
+export HISTTIMEFORMAT="%F %T "
+cat << EOF >>vi ~/.bashrc
+export HISTTIMEFORMAT="%F %T "
+EOF
+source  ~/.bashrc
+
+#add timestamp for all local users
+cat << EOF >>vi /etc/profile
+export HISTTIMEFORMAT="%F %T "
+EOF
+source  /etc/profile
