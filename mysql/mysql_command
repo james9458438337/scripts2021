@@ -128,7 +128,38 @@ alter table tb_books change name name varchar(20) character  set  utf8 not null;
 
 show variables like 'char%';
 
-#########################################################################
+################################# bin logs ########################################
+#show binlog format ROW | STATEMENTT | MIXED
+mysql> show variables lile 'binlog_format';
+#set binlog format
+set globe binlog_format='MIXED'
+#then add this to /etc/my.cnf
+[mysqld]
+binlog_format=MIXED
+
+#show binlog status
+mysql> show variables like 'log_bin'
+#set binlog enable if disabled
+mysql> set sql_log_bin=1
+#show binlog list
+mysql> show binary logs
+#show current writing binlog 
+mysql> show master status
+#show binlog on master
+mysql> show master logs
+#show events from first binlog
+mysql> show binlog events
+#show enents from specific binlog
+mysql> show binlog enents in '<binlog name>'
+
+#set binlog expire days
+mysql> SET GLOBAL expire_logs_days = 7;
+mysql> show variables like ‘expire_%’;
+#then add this to /etc/my.cnf
+[mysqld]
+expire-logs-days=3
+#and mysqld will delete them logs for you
+
 #purge bin logs
 PURGE BINARY LOGS TO ‘mysql-bin.000223’;
 #this will erase all binary logs before ‘mysql-bin.000223’.
@@ -139,10 +170,12 @@ mysql> PURGE BINARY LOGS BEFORE DATE_SUB( NOW( ), INTERVAL 7 DAY);
 mysql> PURGE MASTER LOGS BEFORE ‘2010-03-01 00:00:00’;
 #To purge logs automatically (every Monday at 3am) you could use a cron job like this:
 
-mysql> SET GLOBAL expire_logs_days = 7;
-mysql> show variables like ‘expire_%’;
-#then add this to /etc/my.cnf
-[mysqld]
-expire-logs-days=3
-#and mysqld will delete them logs for you
+#delete binlog from master
+reset master
+#delte binlog from slave
+reset slave
+
+#flush binlog
+mysql> flush logs
+
 #########################################################################

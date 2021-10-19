@@ -1,0 +1,6 @@
+##cdn
+#purge cdn
+hcloud cdn CreateRefreshTasks --refresh_task.urls.1=https://storage.youdaojf.com/VASxhy/yellowduck_resigned202110121333.ipa
+
+#prefetch cdn
+hcloud cdn CreatePreheatingTasks --preheating_task.urls.1=https://storage.youdaojf.com/VASxhy/yellowduck_resigned202110121333.ipa

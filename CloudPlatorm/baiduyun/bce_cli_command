@@ -1,0 +1,13 @@
+####cdn
+
+bce cdn ls
+
+bce cdn purge --url https://download.hncssoft.com/plist/xhy202109192026.plist
+
+
+bce cdn purge --directory http://my.domain.com/to/path/
+
+
+
+
+bce cdn prefetch --url https://download.hncssoft.com/plist/xhy202109192026.plist

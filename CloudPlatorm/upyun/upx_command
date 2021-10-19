@@ -1,0 +1,5 @@
+##obs upload 
+echo -e  "zjhb88-top\nopsnew\npcBN9b5rXgsHlIWEjfIBR60wQUF2Vhp2\n" | upx login && ./upx sync -w 400 /data/awsupload/
+
+##cdn purge
+echo -e  "zjhb88-top\nopsnew\npcBN9b5rXgsHlIWEjfIBR60wQUF2Vhp2\n" | upx login && ./upx purge "https://storage.yequanbao.com/VASxhy/yellowduck_resigned202110120855.ipa"

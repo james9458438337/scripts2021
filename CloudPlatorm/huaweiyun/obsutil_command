@@ -1,0 +1,13 @@
+
+##obs command
+AccessKeyId="UTPPQVRN3AHPJ4UIPDUF"
+SecretAccessKey="KAC5jwevb4LdrevFxwRms90kFiYisfcvfL1bI3iB"
+EndPoint="obs.ap-southeast-1.myhuaweicloud.com"
+BucketURL="https://prehits.obs.myhuaweicloud.com/DSP"
+
+
+./obsutil cp /home/qqc/pre_hit_domain/huaweiyun$DATE_DIR.txt.tar.gz obs://prehits/DSP -i=$AccessKeyId -k=$SecretAccessKey -e=$EndPoint
+
+
+./obsutil ls
+

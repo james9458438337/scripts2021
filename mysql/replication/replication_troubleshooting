@@ -1,0 +1,24 @@
+#1 current status after replication configurated
+mysql> show slave status \G;
+#Seconds_Behind_Master = 0 is in great condition
+#Seconds_Behind_Master = NULL then got problem further check Slave_IO_Running and Slave_SQL_Running
+#Seconds_Behind_Master > 0 this is delay between master and slave
+
+#2 how delay is between master and slave ,base on 'seconds_Behind_Master > 0'
+#compare 'Master_Log_File' and 'Relay_Master_Log_File' from slave status
+#compare 'Read_Master_Log_Pos' and 'Exec_Master_Log_Pos' from salve status
+#compare 'File' from master status and 'Master_Log_File' from slave status; 'Position' from master and 'Read_Master_Log_Pos' from slave.
+
+#3 find reason for causing delay
+#analyze network latence with network tools like ping
+#analyze server(master slave) specification
+#Were there any amount of DML(process) running due replication was happening
+mysql> show full processlist;
+#analyze slow log
+#analyze configuration,disable binlog if slave is not acting as a master
+mysql> set sql_log_bin=1;
+#set 'sync_binlog' as 0 to optimize performance but less safety
+mysql> set global.sync_binlog = 0;
+mysql> show variables like 'sync_binlog';
+mysql> set global.innodb_flush_log_at_trx_commit = 0;
+mysql> show variables like 'innodb_flush_log_at_trx_commit';

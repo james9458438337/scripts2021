@@ -21,6 +21,13 @@ host中IP 地址请修改为ping域名得到的地址，然后在命令行 ping 
 3. 打开浏览器匿名模式，清除DNS缓存和网页缓存后，访问相关域名下的URL，检查相关功能是否正常
 
 
+
+get certificate expire date from origin server use openssl
+echo | openssl s_client -connect akmzz.oCah6bio.com:443 -servername jk.mu1i55ah.com | openssl x509 -noout -dates
+
+
+
+
 ###### Origin SSL Certificate Verification. How to test using openssl command #####
 Description
 1. Introduction.
