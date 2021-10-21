@@ -1,0 +1,114 @@
+############################################## upload down content ##################################################
+
+
+#RSYNC without password
+#You can use the /.ssh/ directory for placing your keys to access the zone.
+
+#If you're familiar with ssh keys, you can add your public key into /.ssh/authorized_keys and use extended rsync call like /.ssh/authorized_keys, which has to be with 600 permission.
+
+#You can use, for example, this command to upload your public key to the CDN Storage (you will still need to use the password here):
+
+#rsync -va /path/to/your/public_key user_xxxxxxxx@push-xx.cdn77.com:/.ssh/authorized_keys
+
+#And then this command to upload files to the Storage, without the need to use the password anymore:
+
+#rsync -e "ssh -i /path/to/your/private_key" /path/to/file user_xxxxxxxx@push-1.cdn77.com:/www/
+
+
+ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y
+
+rsync -va ~/.ssh/id_rsa.pub user_sdxh8fa4@push-24.cdn77.com:/.ssh/authorized_keys
+
+Upload:	
+Click to copy
+rsync -va /YOUR/DIRECTORY/ user_sdxh8fa4@push-24.cdn77.com:/www/
+Download:	
+rsync -va user_sdxh8fa4@push-24.cdn77.com:/www/ /YOUR/DIRECTORY/
+
+
+############################################# Purge #############################################
+// POST request - purging of multiple files at once
+
+curl --data "cdn_id=xxx&login=name@domain.com&passwd=your_api_password&url[]=/path/to/file.jpg&url[]=/path/to/file2.jpg&url[]=/path/to/file3.jpg" https://api.cdn77.com/v2.0/data/purge
+
+// response
+{
+  "status": "ok",
+  "description": "Purge is accepted. It can take few minutes to process the request at all datacentres.",
+  "url": ["/path/to/file.jpg", "/path/to/file2.jpg", "/path/to/file3.jpg"],
+  "request_id": XXX
+} 
+ 
+
+// POST request - purging of single file
+
+curl --data "cdn_id=xxx&login=name@domain.com&passwd=your_api_password&url[]=/images/hello.jpg" https://api.cdn77.com/v2.0/data/purge
+
+// response
+{
+  "status": "ok",
+  "description": "Purge is accepted. It can take few minutes to process the request at all datacentres.",
+  "url": ["/images/hello.jpg"],
+  "request_id": XXX
+}
+
+curl --data "cdn_id=224056&login=helaowang@gmail.com&passwd=g5r0IF3sGhwfH2XkVcESK18aT6LtBnQZ&url[]=/osiflix/Osi_online_official_1.0.1.apk" https://api.cdn77.com/v2.0/data/purge
+ 
+ 
+
+// POST request - purge paths with special symbols (use encoded URL)
+
+curl --data "cdn_id=ID of cdn&login=sample@account.com&passwd=your_api_password&
+url[]=%2FfileWith%20whitespace.jpg%3FmyParam%3D123" https://api.cdn77.com/v2.0/data/purge
+
+// response
+{
+  "status": "ok",
+  "description": "Purge is accepted. It can take few minutes to process the request at all datacentres.",
+  "url": ["%2FfileWith%20whitespace.jpg%3FmyParam%3D123"],
+  "request_id": XXX
+}
+
+
+// POST request
+
+curl --data "cdn_id=xxx&login=name@domain.com&passwd=your_api_password" https://api.cdn77.com/v2.0/data/purge-all
+
+// response
+{
+  "status": "ok",
+  "description": "Purge of all files is accepted. It can take few minutes to process the request at all datacentres."
+}
+
+
+
+########################################## Prefetch ################################################
+// POST request - prefetching of single file
+
+curl --data "cdn_id=xxx&login=name@domain.com&passwd=your_api_password&url[]=/images/hello.jpg" https://api.cdn77.com/v2.0/data/prefetch
+
+// response
+{
+  "status": "ok",
+  "description": "Prefetch is accepted. It can take few minutes to upload all files to all datacentres.",
+  "url": ["/images/hello.jpg"],
+  "request_id": XXX
+}
+
+// POST request - prefetching of multiple files at once
+curl --data "cdn_id=xxx&login=name@domain.com&passwd=your_api_password&url[]=\/images\/hello.jpg&url[]=anotherimage.jpg" https://api.cdn77.com/v2.0/data/prefetch
+
+// response
+{
+  "status": "ok",
+  "description": "Prefetch is accepted. It can take few minutes to upload all files to all datacentres.",
+  "url": ["/images/hello.jpg", "anotherimage.jpg"],
+  "request_id": XXX
+}
+
+
+
+
+
+
+
