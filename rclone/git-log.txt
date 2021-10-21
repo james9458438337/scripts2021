@@ -1,0 +1,172 @@
+commit 86f13fa46b94fb7bb8933922864f05a01dd7c65d
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Sep 19 12:15:09 2021 +0100
+
+    Version v1.56.1
+
+commit b9cf45117714ed0e0e59446107e2038e82c8dec9
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Sep 19 12:03:09 2021 +0100
+
+    Start v1.56.1-DEV development
+
+commit b64258d92eb96d9a3ca2226ffe950cb976a67e9b
+Author: Fred <fred@creativeprojects.tech>
+Date:   Fri Sep 17 22:48:19 2021 +0100
+
+    seafile: fix 2fa state machine
+
+commit 7308100695057c6d6373379ff8fb7a767bb7efc9
+Author: x0b <x0bdev@gmail.com>
+Date:   Thu Sep 2 17:06:38 2021 +0200
+
+    build: update Go to 1.16 and NDK to 22b for android/any
+
+commit 9c27e080b34cae0e0b86d74e6def84a8109d7a48
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Thu Sep 9 15:25:25 2021 +0300
+
+    build: apply gofmt from golang 1.17
+
+commit 21d84df81b0521c37f9a5c00c6868156329bf59d
+Author: Greg Sadetsky <lepetitg@gmail.com>
+Date:   Tue Aug 10 15:45:49 2021 -0400
+
+    docs/s3: fix typo in s3 documentation (#5515)
+
+commit 3f17c729f1ae36ab1e0298151a3c2ea461467f60
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 17 10:04:53 2021 +0100
+
+    pcloud: try harder to delete a failed upload
+    
+    This fixes the integration tests when testing errored uploads
+
+commit d77f594ee7d7a8cabb79598f4cfdb5591df0f2c9
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 17 10:04:19 2021 +0100
+
+    pcloud: return an early error when Put is called with an unknown size
+    
+    This stops the 10 minute pause in the integration tests
+
+commit 478434ffefe8077f995c175543b8ce453e6cac3e
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Fri May 28 15:09:44 2021 +0200
+
+    vfs: fix issue where empty dirs would build up in cache meta dir
+
+commit df52896a0efb20f6fb7b23b24fe9ce07fe913c80
+Author: negative0 <bchaitanya15@gmail.com>
+Date:   Sat Aug 14 10:26:39 2021 +0530
+
+    rc: fix speed does not update in core/stats
+
+commit 29a99205ec0ac82187f139bb576792e1da4ab2f6
+Author: yedamo <logindaveye@gmail.com>
+Date:   Mon Aug 9 18:11:52 2021 +0800
+
+    selfupdate: fix --quiet option, not quite quiet
+    
+    Fixes #5505
+
+commit 693f674f39498bcf560c5135d076698337d9dc44
+Author: Greg Sadetsky <lepetitg@gmail.com>
+Date:   Tue Aug 10 15:59:36 2021 -0400
+
+    docs/drive: Fix lsf example without drive-impersonate (#5504)
+
+commit a506373ca108e1a5bbbe06393ed0f51ade9c5db9
+Author: Greg Sadetsky <lepetitg@gmail.com>
+Date:   Sun Aug 1 10:17:07 2021 -0400
+
+    drive: fix instructions for auto config #5499
+
+commit a8ba15b90a7074c65e4763a7ca4598d67edfd4c0
+Author: hota <lindwurm.q@gmail.com>
+Date:   Sat Jul 31 01:47:33 2021 +0900
+
+    s3: add Wasabi's AP-Northeast endpoint info
+    
+    * Wasabi starts to provide AP Northeast (Tokyo) endpoint for all customers, so add it to the list
+    
+    Signed-off-by: lindwurm <lindwurm.q@gmail.com>
+
+commit b26308c42721f759865acf2385b8d7a387863041
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sat Jul 31 11:04:45 2021 +0100
+
+    sftp: remove spurious error message on --sftp-disable-concurrent-reads
+
+commit 03bcf81c5ef945ebbbffff71aa2ae33c060ed7a2
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Aug 11 11:37:45 2021 +0100
+
+    sugarsync: fix initial connection after config re-arrangement - Fixes #5525
+    
+    In this commit the config system was re-arranged
+    
+        94dbfa4ea fs: change Config callback into state based callback #3455
+    
+    This passed the password as a temporary config parameter but forgot to
+    reveal it in the API call.
+
+commit 8c1d4f17a899354989a1f854677728af998452eb
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Aug 10 17:31:57 2021 +0100
+
+    accounting: fix maximum bwlimit by scaling scale max token bucket size
+    
+    Before this fix, on Windows, the --bwlimit would max out at 2.5Gbps
+    even when set to 10 Gbps.
+    
+    This turned out to be because of the maximum token bucket size.
+    
+    This fix scales up the token bucket size linearly above a bwlimit of
+    2Gbps.
+    
+    Fixes #5507
+
+commit e87de7c7e3ed042616e28a350a5e31fcf7bc09bc
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Aug 10 18:19:20 2021 +0100
+
+    vfs: fix crash when truncating a just uploaded object - Fixes #5522
+
+commit 7a31ef783ada5ab550a31d85c966c2ec77e664f9
+Author: Ivan Andreev <ivandeex@gmail.com>
+Date:   Mon Jul 26 13:44:02 2021 +0300
+
+    mountlib: restore daemon mode after #5415
+
+commit d0de426500ba53e9eec775c7709229aa6fef839d
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 27 16:38:30 2021 +0100
+
+    vfs: fix duplicates on rename - fixes #5469
+    
+    Before this change, if there was an existing file being uploaded when
+    a file was renamed on top of it, then both would be uploaded. This
+    causes a duplicate in Google Drive as both files get uploaded at the
+    same time. This was triggered reliably by LibreOffice saving doc
+    files.
+    
+    This fix removes any duplicates in the upload queue on rename.
+
+commit 34f89043aff381b33d89ee12238101519f748b35
+Author: Alex Chen <Cnly@users.noreply.github.com>
+Date:   Tue Jul 27 17:55:57 2021 +0800
+
+    onedrive: handle HTTP 400 better in PublicLink() (#5419)
+
+commit 3ba001f8d718cda63069c6c4e96d072e247b042b
+Author: Cnly <minecnly@gmail.com>
+Date:   Sat Jul 24 18:01:58 2021 +0800
+
+    http: fix serve http exits directly after starting
+
+commit 6bbf46961c5dc2acbdcb1a1dc6b6c37396c4c423
+Author: Mariano Absatz (git) <scm@baby.com.ar>
+Date:   Fri Jul 23 20:33:30 2021 -0300
+
+    clarification of the process for creating custom client_id
