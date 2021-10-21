@@ -61,7 +61,7 @@ def Main():
 
     # Change local directory (local to the SecureCRT Windows machine) to the
     # folder in which the downloaded file should be saved:
-    objSFTPTab.Screen.Send("lcd d:/Vagrant_vm/project1/working_scripts/initial\r")
+    objSFTPTab.Screen.Send("lcd d:/data/project1/working_scripts/initial\r")
     objSFTPTab.Screen.WaitForString("sftp> ")
     
     # Change remote directory to the folder path where the file to be downloaded
