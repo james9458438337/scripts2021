@@ -1,0 +1,2 @@
+#search file on windows 
+.\bcecmd.exe bos ls storage -ar | findstr "VASxhy/"| findstr "7594"
