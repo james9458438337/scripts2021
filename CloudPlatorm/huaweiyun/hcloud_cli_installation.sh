@@ -30,3 +30,9 @@ cat << EOF > /root/.hcloud/config.json
 }
 EOF
 
+
+hcloud configure init 
+
+
+
+

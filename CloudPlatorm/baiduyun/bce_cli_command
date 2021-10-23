@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ####cdn
 
 bce cdn ls
@@ -14,3 +15,18 @@ bce cdn prefetch --url https://download.hncssoft.com/plist/xhy202109192026.plist
 
 bce --conf-path /root/.bce_cdn001/ cdn purge --url https://download.cxeryyx.cn/plist/xhy.plist
 bce --conf-path /root/.bce_pxwl0007/ cdn purge --url https://download.ydlsystem.com/plist/xhy.plist
+=======
+####cdn
+
+bce cdn ls
+
+bce cdn purge --url https://download.hncssoft.com/plist/xhy202109192026.plist
+
+
+bce cdn purge --directory http://my.domain.com/to/path/
+
+
+
+
+bce cdn prefetch --url https://download.hncssoft.com/plist/xhy202109192026.plist
+>>>>>>> 311bbc40373b7571b06f20c0381382bad4278516
