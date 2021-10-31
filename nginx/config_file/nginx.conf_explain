@@ -1,0 +1,7 @@
+#disable nginx version number
+http
+{
+    server_tokens off;    
+}
+
+#nginx name disappare

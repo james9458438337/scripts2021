@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #Install opensl
-wget --no-check-certificate https://www.openssl.org/source/openssl-1.1.1l.tar.gz
-tar xvfz openssl-1.1.1c.tar.gz
+wget --no-check-certificate http://www.openssl.org/source/openssl-1.1.1l.tar.gz
+tar xvfz openssl-1.1.1l.tar.gz
 cd openssl-1.1.1l
 ./config --prefix=/usr/local/openssl/1_1_1l --openssldir=/usr/local/openssl shared
 make
@@ -26,6 +26,8 @@ Build as 64bit library. (Used on Mac OS)
 Directory for OpenSSL files. If no prefix is specified, the library files and binaries are also installed there.
 COMMENT
 
+mkdir /usr/local/lib/pkgconfig
+
 #Create installed libraries to under "/usr/local" by symbolic link.
 # /usr/local/bin
 ln -s /usr/local/openssl/1_1_1l/bin/c_rehash /usr/local/bin/
@@ -38,10 +40,10 @@ ln -s /usr/local/openssl/1_1_1l/include/openssl /usr/local/include/
 ln -s /usr/local/openssl/1_1_1l/lib/engines-1.1 /usr/local/lib/
 ln -s /usr/local/openssl/1_1_1l/lib/libcrypto.a /usr/local/lib/ 
 ln -s /usr/local/openssl/1_1_1l/lib/libcrypto.so /usr/local/lib/
-ln -s /usr/local/openssl/1_1_1l/lib/libcrypto.so.1.0.0 /usr/local/lib/
+ln -s /usr/local/openssl/1_1_1l/lib/libcrypto.so.1.1 /usr/local/lib/
 ln -s /usr/local/openssl/1_1_1l/lib/libssl.a /usr/local/lib/
 ln -s /usr/local/openssl/1_1_1l/lib/libssl.so /usr/local/lib/
-ln -s /usr/local/openssl/1_1_1l/lib/libssl.so.1.0.0 /usr/local/lib/
+ln -s /usr/local/openssl/1_1_1l/lib/libssl.so.1.1 /usr/local/lib/
 
 #/usr/local/lib/pkgconfig
 ln -s /usr/local/openssl/1_1_1l/lib/pkgconfig/libcrypto.pc /usr/local/lib/pkgconfig/

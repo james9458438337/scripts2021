@@ -1,0 +1,7 @@
+#refresh cdn
+jdc cdn create-refresh-task --task-type url --urls '[“https://download.ahchuhansp.com/plist/xhy.plist”]'
+
+jdc cdn create-refresh-task --task-type dir --urls '[“https://download.ahchuhansp.com/VASshy”]'
+
+#prefetch cdn
+jdc cdn create-refresh-task --task-type prefetch --urls '[“https://download.ahchuhansp.com/VASshy”]'
