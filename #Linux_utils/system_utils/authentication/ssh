@@ -1,3 +1,13 @@
+#generate key without interactive
 printf '\n%.0s' {1..4} | ssh-keygen -q -t rsa -N ''
+
+#generate key with specific file name
 ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y 
+
+#copy public key to remote hosts
 ssh-copy-id -i ~/.ssh/id_rsa.pub qqc@23.237.112.194
+
+
+#remove fingerprint from local trusts to /.ssh/known_hosts.old 
+ssh-keygen -R 192.168.34.1
+

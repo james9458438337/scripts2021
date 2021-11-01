@@ -1,3 +1,63 @@
+#generate hex number by openssl
+openssl rand -hex 16 
+
+
+#self sigin key and certificate
+openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/CN=www.example.com' -keyout server.key -out server.crt
+
+#check certificate from file
+openssl x509 -text -in server.crt -noout
+
+#create private key for root ca
+openssl genrsa -aes256 -out root-ca/private/ca.key 4096
+
+
+#create root certificate using "openssl req" command with root private key ,Common Name : RootCA 
+cd root-ca
+openssl req -config root-ca.conf -key private/ca.key -new -x509 -days 7500 -sha256 -extensions v3_ca -out certs/ca.crt
+
+openssl x509 -noout -in certs/ca.crt -text
+
+
+
+#create sub-ca certificate sigining request CSR using "openssl req" command with sub-ca private key ,Common Name : SubCA 
+openssl req -config sub-ca.conf -new -key private/sub-ca.key -sha256 -out csr/sub-ca.csr
+
+
+#create sub-ca certificate using "openssl ca" comamnd by sigining sub-ca csr
+cd sub-ca
+openssl ca -config root-ca.conf -extensions v3_intermediate_ca -days 3650 -notext -in ../sub-ca/csr/sub-ca.csr -out ../sub-ca/certs/sub-ca.crt
+
+openssl x509 -noout -text -in ../sub-ca/certs/sub-ca.crt
+
+
+#create server certificate sigining request CSR using "openssl req" command with sub-ca private key ,Common Name : www.example.com
+cd server
+openssl req -key private/server.key -new -sha256 -out csr/server.csr
+
+
+#create server certificate using "openssl ca" comamnd by sigining server csr
+cd sub-ca
+openssl ca -config sub-ca.conf -extensions server_cert -days 365 -notext -in ../server/csr/server.csr -out ../server/certs/server.crt
+
+
+#concatenating sub-ca certificate and server certificate together
+cd server/certs
+cat server.crt ../../sub-ca/certs/sub-ca.crt > chained.crt
+
+ 
+
+#start server instance with "openssl s_server" command
+echo "192.168.34.10 www.example.com" >> /etc/hosts
+ping  www.example.com
+cd server
+openssl s_server -accept 443 -www -key private/server.key -cert certs/server.crt -CAfile ../sub-ca/certs/sub-ca.crt
+
+
+
+
+
+
 # Check a certificate and return information about it (signing authority, expiration date, etc.):
 
 openssl x509 -in server.crt -text -noout
@@ -17,3 +77,14 @@ openssl req -text -noout -verify -in server.csr
 
 openssl x509 -noout -modulus -in server.crt| openssl md5
 openssl rsa -noout -modulus -in server.key| openssl md5
+
+
+#check what is ending date for crt
+openssl x509 -noout -in f2db02a799f8c333.crt -enddate
+
+#convert openssl output date type to standard date type
+openssl x509 -noout -in f2db02a799f8c333.pem -enddate |cut -d= -f 2
+date --date="$(openssl x509 -noout -in server.crt -enddate |cut -d= -f 2)" --iso-8601
+
+#check certificate will or wil not expired in 30 days
+openssl x509 -checkend 2592000 -noout -in server.crt
