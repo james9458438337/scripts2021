@@ -25,7 +25,6 @@ for pem in $(find /root/domain -name *.pem); do
     else
         echo -e "Certificate \033[35m $pem \033[0m is invalid/not found" |tee -a $LOGFILE
         curl -F text="$(hostname) 🔥🔥🔥 Certificate $pem is invalid/not found" -F chat_id="-581357601" https://api.telegram.org/bot1844283076:AAEmK-McRiY1H3-WJwVKZY3OaoOvLEVfBP8/sendmessage > /dev/null 2>&1
-
     fi
 done
 
