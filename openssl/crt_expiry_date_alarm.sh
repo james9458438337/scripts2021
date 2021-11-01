@@ -1,4 +1,11 @@
 #!/bin/bash
+which datediff
+if [[ $? -ne 0 ]]
+then
+wget http://download.opensuse.org/repositories/utilities/RHEL_7/utilities.repo -O /etc/yum.repos.d/utilities.repo
+yum install -y dateutils
+fi
+
 LOGFILE="/tmp/ssl_checking.log"
 echo "" > $LOGFILE
 
