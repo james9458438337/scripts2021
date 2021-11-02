@@ -7,7 +7,7 @@ while read ICPNAME; do
 DATETIME=$(date +"%a-%Y-%m-%d %H:%M:%S")
 IP=$(ping $ICPNAME -c 1 2> /dev/null | awk '{print $3}'| head -1|cut -d'(' -f 2 | cut -d')' -f 1)
 IPGEO=$(curl -s https://ipinfo.io/$IP | grep "country" | cut -d: -f 2|cut -d'"' -f 2)
-    if [[ $IPGEO = "CN" ]]
+    if [[ -z "$IP" ]]
     then
         echo "$DATETIME   $ICPNAME   BEI AN is good" | tee -a $LOGFILE
     else
