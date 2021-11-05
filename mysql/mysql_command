@@ -179,3 +179,7 @@ reset slave
 mysql> flush logs
 
 #########################################################################
+#export table to csv file
+mysql6603 -P 6603 -S  /home/mysql_6603/mysql.sock -uroot -p'<password>' -A yellowDoubanDB  -e "select content as keyword,concat('|',count(0)) as nums from user_search_log group by content having count(0)>1 order by nums desc" > /tmp/tmp.csv
+
+select content as keyword,count(0) as nums from user_search_log group by content having count(0)>1 order by nums desc into outfile '/home/mysql_6603/ext_dict.dic' fields terminated by '|'  lines terminated by '\n';
