@@ -15,6 +15,10 @@ testing bot (get chat_id)
 curl https://api.telegram.org/bot1844283076:AAEmK-McRiY1H3-WJwVKZY3OaoOvLEVfBP8/getupdates
 curl https://api.telegram.org/bot1844283076:AAEmK-McRiY1H3-WJwVKZY3OaoOvLEVfBP8/getUpdates | jq .message.chat.id
 
+
+#add @tchncs_bot to group then tpye /id , you will get group chat id
+
+
 ###send message through api
 https://api.telegram.org/bot1844283076:AAEmK-McRiY1H3-WJwVKZY3OaoOvLEVfBP8/sendmessage?chat_id=-581357601&text=I+am+as+your+service+!!
 

@@ -1,0 +1,30 @@
+#accout: 9458438337
+telegram bot ID
+1844283076:AAEmK-McRiY1H3-WJwVKZY3OaoOvLEVfBP8
+
+chat_id
+-581357601
+
+bot name
+jarvis
+
+bot user name
+jarvis_911_bot
+++++++++++++++++++++++++++++++++++++++++++++++
+telegram bot ID
+2074791028:AAFymLc_QOTLo7TqvuDAOyg8GwVc-QRLdnM
+
+chat_id
+-600194478
+
+bot name
+sslbot
+
+bot user name
+jarvis_ssl_bot
+
+
+
+curl -F text="This is a test from curl" -F disable_notification="true" -F chat_id="-600194478" https://api.telegram.org/bot2074791028:AAFymLc_QOTLo7TqvuDAOyg8GwVc-QRLdnM/sendmessage
+
+
