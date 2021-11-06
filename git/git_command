@@ -2,3 +2,15 @@
 git remote set-url origin http://username:password@gitxxxx.xxx.xxx 
 
 
+
+
+###clone a subdirectory of a git project
+
+#creat empty git local repo
+git init crt_list
+cd crt_list
+git remote add origin http://james9458438337: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@github.com/james9458438337/scripts2021.git
+git config core.sparsecheckout true
+
+echo "domain/*" >> .git/info/sparse-checkout
+ git pull origin main
