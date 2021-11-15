@@ -1,0 +1,66 @@
+#source
+1. 通过源码安装
+
+git clone https://gitee.com/kalcaddle/KODExplorer.git
+chmod -Rf 777 ./KODExplorer/*
+2. 下载安装
+
+wget https://gitee.com/kalcaddle/KODExplorer/repository/archive/master.zip
+unzip master.zip
+chmod -Rf 777 ./*
+
+
+
+
+#get user access token with user name & password
+curl 'http://192.168.34.30/?user/loginSubmit&isAjax=1&getToken=1&name=admin&password=admin'
+
+{
+    "code": true,
+    "use_time": 0.007241964340209961,
+    "data": "b47bVNkYtcdXbFf8so2-W_V38q13XV_0-dBWbJN1L5E8iJixUgG8RiPLNQtldNswMdAoCMDzYg"
+}
+
+
+
+curl 'http://192.168.34.30/?user/loginSubmit&isAjax=1&getToken=1&name=test1&password=123456'
+
+{
+    "code": true,4bdaJOKnWYk7QLmG2rP5tPncaYIjbiXYBtUTTUyYoZMjrdUXLEGf2cvqcMwtZU1NQ7bGV3jUIQ
+    "use_time": 0.008426904678344727,
+    "data": "4bdaJOKnWYk7QLmG2rP5tPncaYIjbiXYBtUTTUyYoZMjrdUXLEGf2cvqcMwtZU1NQ7bGV3jUIQ"
+}
+
+#get user access token with ###login_token：base64encode([username])+|+MD5([username]+[apiLoginTonken])###
+apiLoginTonken=aabbcckod # in /config/setting_user.php
+login_token: base64Encode('admin')+'|'+md5('admin'+'aabbcckod')
+login_token: YWRtaW4=|83ca7512188b3070a1cd9b4977bc17dc
+curl http://192.168.34.30/?user/loginSubmit&isAjax=1&getToken=1&login_token=YWRtaW4%3D%7C83ca7512188b3070a1cd9b4977bc17dc
+
+
+
+AccessToken=$(curl -s 'http://192.168.34.30/?user/loginSubmit&isAjax=1&getToken=1&name=admin&password=admin' | grep data| awk -F'"' '{print $4}')
+AccessToken=$(curl -s 'http://192.168.34.30/?user/loginSubmit&isAjax=1&getToken=1&name=test1&password=123456' | grep data| awk -F'"' '{print $4}')
+
+AccessToken=$(curl -s 'http://192.168.34.20/?user/loginSubmit&isAjax=1&getToken=1&name=user1&password=123456' | grep data| awk -F'"' '{print $4}')
+
+
+#list file #curl 'http://server/explorer/pathList&accessToken=b47bVNkYtcdXbFf8so2-W_V38q13XV_0-dBWbJN1L5E8iJixUgG8RiPLNQtldNswMdAoCMDzYg&path=/'
+curl 'http://192.168.34.30/?explorer/pathList&accessToken=b47bVNkYtcdXbFf8so2-W_V38q13XV_0-dBWbJN1L5E8iJixUgG8RiPLNQtldNswMdAoCMDzYg&path=/'
+curl "http://192.168.34.30/?explorer/pathList&accessToken="4bdaJOKnWYk7QLmG2rP5tPncaYIjbiXYBtUTTUyYoZMjrdUXLEGf2cvqcMwtZU1NQ7bGV3jUIQ"&path=/"
+
+curl "http://192.168.34.30/?explorer/pathList&accessToken=$AccessToken&path=/"
+curl "http://192.168.34.30/?explorer/pathList&accessToken=$AccessToken&path=/home/kodexplorer/data/User/admin/home/desktop"
+
+curl "http://192.168.34.20/?explorer/pathList&accessToken=$AccessToken&path=/home/kodexplorer/data/User/user1/home/app2"
+
+
+#upload file
+curl -F "data=@/root/oneinstack-full.tar.gz" -H "Content-Disposition: form-data; name='file'; filename='oneinstack-full.tar.gz'" -H "Content-Type: text/plain; boundary=------WebKitFormBoundaryFsygKya2ipXTuvjD" "http://192.168.34.30/?explorer/fileUpload&accessToken=$AccessToken&upload_to=/home/kodexplorer/data/User/admin/home/desktop/&name=oneinstack-full.tar.gz"
+
+
+curl -F "data=@/root/oneinstack-full.tar.gz" -H "Content-Disposition: form-data; name='file'; filename='oneinstack-full.tar.gz'" -H "Content-Type: text/plain; boundary=------WebKitFormBoundaryFsygKya2ipXTuvjD" "http://192.168.34.20/?explorer/fileUpload&accessToken=$AccessToken&upload_to=/home/kodexplorer/data/User/user1/home/app2/&name=oneinstack-full.tar.gz"
+
+
+#empty Recycle_bin
+curl "http://192.168.34.30/?explorer/pathDeleteRecycle&accessToken=$AccessToken"
