@@ -88,3 +88,14 @@ date --date="$(openssl x509 -noout -in server.crt -enddate |cut -d= -f 2)" --iso
 
 #check certificate will or wil not expired in 30 days
 openssl x509 -checkend 2592000 -noout -in server.crt
+
+
+####### certificate revokation check ########
+
+#check ocsp stapling setting on server side
+openssl s_client -connect $DOMAIN:443 -tls1 -tlsexdebug -status | grep OCSP -A 2 -B 1
+
+#get OCSP uri
+OCSPURI=$(openssl x509 -noout -ocsp_uri -in $local_certificate_fullpath)
+#check certificate status from OCSP url
+OCSPSTATUS=$(openssl ocsp -noverify -issuer $local_intermediate_certificate_fullpath -cert $local_certificate_fullpath -url $OCSPURI | grep $certificate_name| awk '{print $2}')

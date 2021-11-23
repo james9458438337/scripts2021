@@ -1,0 +1,8 @@
+
+#display current shell
+echo $SHELL
+
+#shell list in /etc/shells
+
+#change current shell 
+chsh -s /bin/bash

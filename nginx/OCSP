@@ -1,0 +1,8 @@
+#set OCSP stapling  config on nginx
+
+ssl_stapling on;
+ssl_trusted_certificate /path/chain.pem
+
+
+#verify on command line
+openssl s_client -connect $DOMAIN:443 -tls1 -tlsexdebug -status | grep OCSP -A 2 -B 1
