@@ -1,6 +1,6 @@
 #reset remote address 
 git remote set-url origin http://username:password@gitxxxx.xxx.xxx 
-git remote set-url origin http://james9458438337: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@github.com/james9458438337/scripts2021.git                    
+git remote set-url origin http://james9458438337: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@github.com/james9458438337/scripts2021.git                    
 
 
 

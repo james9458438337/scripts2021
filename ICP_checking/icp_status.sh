@@ -1,5 +1,11 @@
 #!/bin/bash
 
+which jq
+if [[ $? -ne 0 ]]
+then
+yum install -y jq
+fi
+
 BOTID='2074791028'
 BOTTOKEN='AAFymLc_QOTLo7TqvuDAOyg8GwVc-QRLdnM'
 CHATID='-600194478'
@@ -14,45 +20,36 @@ alarm(){
     printf "\033[33m %-30s   %-30s   %-30s  \033[0m \n" DATETIME ICPNAME STATUS
     
     cat $FILE | grep -v "#" | while read ICPNAME; do
-    STATUS=$(curl -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0" -sSL "https://9322fa114435ee58.nowapi.com?app=domain.beian&domain=$ICPNAME&appkey=$APPKEY&sign=$TOKEN&format=json" | jq ".result.status" | awk -F "\"" '{print $2}')
+    sleep 1
+    STATUS=$(curl -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0" -sSL "https://9322fa114435ee58.nowapi.com?app=domain.beian&domain=$ICPNAME&appkey=$APPKEY&sign=$TOKEN&format=json" | jq -jr ".result.status,.result.msg")
     DATETIME=$(date +"%a-%Y-%m-%d %H:%M:%S")
     
-        if [[ $STATUS="ALREADY_BEIAN" ]]
+        if [[ $STATUS == *"ALREADY_BEIAN"* ]]
         then
-            echo "$DATETIME   $ICPNAME  $STATUS BEI AN is good" | tee -a $LOGFILE
-    
-        elif [[ $STATUS="NOT_BEIAN" ]]
-        then
-            echo -e "\033[31m$DATETIME   $ICPNAME  $STATUS  BEI AN is droped \033[0m " | tee -a $LOGFILE
-            curl -F text="🔥🔥🔥 $ICPNAME BEI AN is droped!" -F chat_id="$CHATID" https://api.telegram.org/bot$BOTID:$BOTTOKEN/sendmessage > /dev/null 2>&1
+            printf "\033[32m %-30s   %-30s   %-30s  \033[0m \n" "$DATETIME" "$ICPNAME" "$STATUS" | tee -a $LOGFILE
     
         else
-            echo -e "\033[31m$DATETIME   $ICPNAME  $STATUS  \033[0m " | tee -a $LOGFILE    
+            printf "\033[31m %-30s   %-30s   %-30s  \033[0m \n" "$DATETIME" "$ICPNAME" "$STATUS" | tee -a $LOGFILE
+            curl -F text="🔥🔥🔥 $ICPNAME $STATUS!" -F chat_id="$CHATID" https://api.telegram.org/bot$BOTID:$BOTTOKEN/sendmessage > /dev/null 2>&1
         fi
     done
+    curl -F text="🍀🍀🍀🍀 $DATETIME ICP checker is done!" -F chat_id="$CHATID" https://api.telegram.org/bot$BOTID:$BOTTOKEN/sendmessage> /dev/null 2>&1
 }
 
 checkall(){
     printf "\033[33m %-30s   %-30s   %-30s  \033[0m \n" DATETIME ICPNAME STATUS
     
     cat $FILE | grep -v "#" | while read ICPNAME; do
-    STATUS=$(curl -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0" -sSL "https://9322fa114435ee58.nowapi.com?app=domain.beian&domain=$ICPNAME&appkey=$APPKEY&sign=$TOKEN&format=json" | jq ".result.status" | awk -F "\"" '{print $2}')
+    sleep 1
+    STATUS=$(curl -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0" -sSL "https://9322fa114435ee58.nowapi.com?app=domain.beian&domain=$ICPNAME&appkey=$APPKEY&sign=$TOKEN&format=json" | jq -jr ".result.status,.result.msg")
     DATETIME=$(date +"%a-%Y-%m-%d %H:%M:%S")
     
-        if [[ $STATUS="ALREADY_BEIAN" ]]
+        if [[ $STATUS == *"ALREADY_BEIAN"* ]]
         then
             printf "\033[32m %-30s   %-30s   %-30s  \033[0m \n" \
             "$DATETIME" \
             "$ICPNAME" \
             "$STATUS"
-    
-        elif [[ $STATUS="NOT_BEIAN" ]]
-        then
-            printf "\033[31m %-30s   %-30s   %-30s  \033[0m \n" \
-            "$DATETIME" \
-            "$ICPNAME" \
-            "$STATUS"
-    
         else
             printf "\033[31m %-30s   %-30s   %-30s  \033[0m \n" \
             "$DATETIME" \
@@ -64,25 +61,17 @@ checkall(){
 
 
 
-check()){
+check(){
     ICPNAME=$1
-    STATUS=$(curl -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0" -sSL "https://9322fa114435ee58.nowapi.com?app=domain.beian&domain=$ICPNAME&appkey=$APPKEY&sign=$TOKEN&format=json" | jq ".result.status" | awk -F "\"" '{print $2}')
+    STATUS=$(curl -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0" -sSL "https://9322fa114435ee58.nowapi.com?app=domain.beian&domain=$ICPNAME&appkey=$APPKEY&sign=$TOKEN&format=json" | jq -jr ".result.status,.result.msg")
     DATETIME=$(date +"%a-%Y-%m-%d %H:%M:%S")
 
-    if [[ $STATUS="ALREADY_BEIAN" ]]
+    if [[ $STATUS == *"ALREADY_BEIAN"* ]]
     then
         printf "\033[32m %-30s   %-30s   %-30s  \033[0m \n" \
         "$DATETIME" \
         "$ICPNAME" \
         "$STATUS"
-
-    elif [[ $STATUS="NOT_BEIAN" ]]
-    then
-        printf "\033[31m %-30s   %-30s   %-30s  \033[0m \n" \
-        "$DATETIME" \
-        "$ICPNAME" \
-        "$STATUS"
-
     else
         printf "\033[31m %-30s   %-30s   %-30s  \033[0m \n" \
         "$DATETIME" \
